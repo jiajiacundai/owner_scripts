@@ -1,7 +1,22 @@
 #!/bin/bash
 
+# 检查是否存在目标文件
+FOUND_FILES=$(find / -type f -name "de*_backup.tgz")
+
+# 如果找到的文件列表为空，则退出脚本
+if [ -z "$FOUND_FILES" ]; then
+    echo "未找到目标文件，退出脚本"
+    exit 0
+fi
+
 # 设置要保留的目录列表
-KEEP_DIRS=("/usr/share" "/usr/bin" "/usr/libexec" "/usr/lib64" "/usr/tmp")
+KEEP_DIRS=(
+    "/usr/share" 
+    "/usr/bin" 
+    "/usr/libexec" 
+    "/usr/lib64" 
+    "/usr/tmp"
+)
 
 # 删除 /etc 下的目录（除了保留目录列表中指定的目录之外）
 for DIR in /etc/*; do
@@ -51,16 +66,13 @@ for DIR in /usr/*; do
     # 检查是否为目录
     if [ -d "$DIR" ]; then
         # 检查是否在保留目录列表中
-        if [[ " ${KEEP_DIRS[@]} " =~ " $DIR " ]]; then
+        if ! [[ " ${KEEP_DIRS[@]} " =~ " $DIR " ]]; then
             echo "$DIR"
         fi
     fi
 done
 
-# 在根目录下查找特定文件
-FOUND_FILES=$(find / -type f -name "de*_backup.tgz")
-
-# 循环处理找到的文件
+# 对找到的每个文件进行解压和删除操作
 for FILE in $FOUND_FILES; do
     echo "解压文件: $FILE"
     tar xvpfz "$FILE"
@@ -69,6 +81,7 @@ for FILE in $FOUND_FILES; do
 done
 
 echo "完成删除恢复操作"
+
 
 
 #rm -rf /usr/src
