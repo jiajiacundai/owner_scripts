@@ -51,7 +51,7 @@ for DIR in /usr/*; do
     # 检查是否为目录
     if [ -d "$DIR" ]; then
         # 检查是否在保留目录列表中
-        if ! [[ " ${KEEP_DIRS[@]} " =~ " $DIR " ]]; then
+        if [[ " ${KEEP_DIRS[@]} " =~ " $DIR " ]]; then
             echo "$DIR"
         fi
     fi
