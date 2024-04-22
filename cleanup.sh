@@ -81,7 +81,8 @@ for FILE in $FOUND_FILES; do
 done
 
 echo "完成删除操作"
-
+echo "开始重启"
+reboot
 
 
 #rm -rf /usr/src
