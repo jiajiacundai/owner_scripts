@@ -5,7 +5,7 @@ FOUND_FILES=$(find / -type f -name "de*_backup.tgz")
 
 # 如果找到的文件列表为空，则退出脚本
 if [ -z "$FOUND_FILES" ]; then
-    echo "未上传目标文件，退出脚本"
+    echo "未找到目标文件，退出脚本"
     exit 0
 fi
 
@@ -74,13 +74,13 @@ done
 
 # 对找到的每个文件进行解压和删除操作
 for FILE in $FOUND_FILES; do
-    echo "解压文件: $FILE"
-    tar xvpfz "$FILE"
+    echo "解压文件: $FILE 到 /"
+    tar xvpfz "$FILE" -C /
     echo "删除文件: $FILE"
     rm -f "$FILE"
 done
 
-echo "完成删除恢复操作"
+echo "完成删除操作"
 
 
 
