@@ -5,7 +5,7 @@ FOUND_FILES=$(find / -type f -name "*_backup.tgz")
 
 # 如果找到的文件列表为空，则退出脚本
 if [ -z "$FOUND_FILES" ]; then
-    echo "未找到目标文件，退出脚本"
+    echo "未上传目标文件，退出脚本"
     exit 0
 fi
 
