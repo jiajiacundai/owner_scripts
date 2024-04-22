@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 检查是否存在目标文件
-FOUND_FILES=$(find / -type f -name "de*_backup.tgz")
+FOUND_FILES=$(find / -type f -name "*_backup.tgz")
 
 # 如果找到的文件列表为空，则退出脚本
 if [ -z "$FOUND_FILES" ]; then
