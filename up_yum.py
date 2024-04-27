@@ -20,9 +20,18 @@ for filename in os.listdir(directory):
 
 # 修改配置文件
 def change_selinux_mode(mode):
-    config_file_path = "/etc/selinux/config"
-    sed_command = "sed -i 's/^SELINUX=.*/SELINUX={}/' {}".format(mode, config_file_path)
-    subprocess.Popen(sed_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # 打开文件并读取内容
+    with open('/etc/selinux/config', 'r') as file:
+        lines = file.readlines()
+
+    # 遍历每一行，找到并修改 SELINUX= 的行
+    for i in range(len(lines)):
+        if lines[i].strip().startswith('SELINUX=') and not lines[i].strip().startswith('#'):
+            lines[i] = 'SELINUX={}\n'.format(mode)
+
+    # 将修改后的内容写回文件
+    with open('/etc/selinux/config', 'w') as file:
+        file.writelines(lines)
     print('SELinux 模式已更改为 {}'.format(mode))
 
 # 将 SELinux 模式设置为 permissive
