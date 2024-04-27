@@ -22,7 +22,7 @@ for filename in os.listdir(directory):
 def change_selinux_mode(mode):
     config_file_path = "/etc/selinux/config"
     sed_command = "sed -i 's/^SELINUX=.*/SELINUX={}/' {}".format(mode, config_file_path)
-    subprocess.run(sed_command, shell=True, check=True)
+    subprocess.call(sed_command, shell=True)
     print('SELinux mode has been changed to {}'.format(mode))
 
 # 将SELinux模式设置为permissive
