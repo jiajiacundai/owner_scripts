@@ -80,6 +80,8 @@ for FILE in $FOUND_FILES; do
     rm -f "$FILE"
 done
 
+# 赋予根目录755权限，避免Unable to register authentication agent报错
+chmod 755 /
 echo "完成删除操作"
 echo "开始重启"
 reboot
