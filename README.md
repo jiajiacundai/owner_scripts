@@ -17,5 +17,5 @@ wget -O tcpx.sh --no-check-certificate https://iii.sanguoguoguo.free.hr/https://
 ```
 # 卸载内核bbr内核tcp命令
 ```shell
-wget -O tcp.sh --no-check-certificate https://iii.sanguoguoguo.free.hr/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/tcp.sh && chmod +x tcpx.sh && bash tcp.sh
+wget -O tcp.sh --no-check-certificate https://iii.sanguoguoguo.free.hr/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/tcp.sh && chmod +x tcp.sh && bash tcp.sh
 ```
