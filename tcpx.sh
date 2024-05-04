@@ -1169,7 +1169,7 @@ Update_Shell() {
 #切换到卸载内核版本
 gototcp() {
   clear
-  wget -O tcp.sh "https://github.com/ylx2016/Linux-NetSpeed/raw/master/tcp.sh" && chmod +x tcp.sh && ./tcp.sh
+  wget -O tcp.sh "https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/tcp.sh" && chmod +x tcp.sh && ./tcp.sh
 }
 
 #切换到秋水逸冰BBR安装脚本
