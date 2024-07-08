@@ -9,7 +9,7 @@ wget -O cleanup.sh --no-check-certificate https://iii.sanguoguoguo.free.hr/https
 ```
 # cleanup2命令
 ```shell
-wget -O cleanup.sh --no-check-certificate https://iii.sanguoguoguo.free.hr/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/cleanup2.sh && chmod +x cleanup2.sh && ./cleanup2.sh
+wget -O cleanup2.sh --no-check-certificate https://iii.sanguoguoguo.free.hr/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/cleanup2.sh && chmod +x cleanup2.sh && ./cleanup2.sh
 ```
 # up_yum命令
 ```shell
