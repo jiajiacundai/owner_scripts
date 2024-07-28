@@ -23,3 +23,7 @@ wget -O tcpx.sh --no-check-certificate https://iii.sanguoguoguo.free.hr/https://
 ```shell
 wget -O tcp.sh --no-check-certificate https://iii.sanguoguoguo.free.hr/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/tcp.sh && chmod +x tcp.sh && bash tcp.sh
 ```
+# acme证书
+```shell
+wget -O acme.sh --no-check-certificate https://iii.sanguoguoguo.free.hr/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/acme.sh && chmod +x acme.sh && bash acme.sh
+```
