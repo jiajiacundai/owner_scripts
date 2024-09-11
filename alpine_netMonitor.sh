@@ -15,12 +15,20 @@ if [ -d "/opt/NetMonitor" ] || [ -f "/etc/systemd/system/netmonitor.service" ]; 
     read -p "请输入选项（1/2/3）：" choice
     case $choice in
         1)
-            systemctl stop netmonitor
+            if command -v apk &> /dev/null; then
+                rc-service netmonitor stop
+            else
+                systemctl stop netmonitor
+            fi
             rm -rf /opt/NetMonitor
             rm -f /etc/systemd/system/netmonitor.service
             ;;
         2)
-            systemctl stop netmonitor
+            if command -v apk &> /dev/null; then
+                rc-service netmonitor stop
+            else
+                systemctl stop netmonitor
+            fi
             rm -f /opt/NetMonitor/netmonitor
             ;;
         3)
