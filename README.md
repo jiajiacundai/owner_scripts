@@ -29,5 +29,5 @@ wget -O acme.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://ra
 ```
 # netMonitor.sh
 ```shell
-wget -O alpine_netMonitor.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/alpine_netMonitor.sh && chmod +x alpine_netMonitor.sh && bash acme.shalpine_netMonitor.sh
+wget -O alpine_netMonitor.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/alpine_netMonitor.sh && chmod +x alpine_netMonitor.sh && bash alpine_netMonitor.sh
 ```
