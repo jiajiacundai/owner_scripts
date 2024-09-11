@@ -156,11 +156,11 @@ if [ "$choice" == "1" ]; then
 EOL
 fi
 
-# 创建systemd服务
-echo "创建systemd服务文件..."
+# 创建rc-service服务
+echo "创建rc-service服务文件..."
 if [ "$choice" == "1" ]; then
-    # 创建systemd服务
-    echo "创建systemd服务文件..."
+    # 创建rc-service服务
+    echo "创建rc-service服务文件..."
     cat <<EOL > /etc/init.d/netmonitor.service
 #!/sbin/openrc-run
 
