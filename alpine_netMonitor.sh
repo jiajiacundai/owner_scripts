@@ -41,6 +41,9 @@ if command -v apt-get &> /dev/null; then
     apt-get install -y curl wget
 elif command -v yum &> /dev/null; then
     yum install -y curl wget
+elif command -v apk &> /dev/null; then
+    apk update
+    apk add curl wget
 else
     distribution=$(grep "^ID=" /etc/*release | cut -d= -f2 | tr -d \")
     echo "不支持 $distribution 系统，请提出issue进行添加"
