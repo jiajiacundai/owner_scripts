@@ -158,34 +158,50 @@ echo "创建systemd服务文件..."
 if [ "$choice" == "1" ]; then
     # 创建systemd服务
     echo "创建systemd服务文件..."
-    cat <<EOL > /etc/systemd/system/netmonitor.service
-[Unit]
-Description=Network Bandwidth Monitor
-After=network.target
+    cat <<EOL > /etc/init.d/netmonitor.service
+#!/sbin/openrc-run
 
-[Service]
-WorkingDirectory=/opt/NetMonitor
-ExecStart=/opt/NetMonitor/netmonitor -c /opt/NetMonitor/config.json
-StandardOutput=file:/opt/NetMonitor/output.log
-StandardError=file:/opt/NetMonitor/error.log
-Restart=always
-RestartSec=5
+description="Network Bandwidth Monitor"
 
-[Install]
-WantedBy=multi-user.target
+command="/opt/NetMonitor/netmonitor"
+command_args="-c /opt/NetMonitor/config.json"
+command_background="yes"
+
+output_log="/opt/NetMonitor/output.log"
+error_log="/opt/NetMonitor/error.log"
+
+depend() {
+    need net
+}
+
+start_pre() {
+    ebegin "Starting Network Bandwidth Monitor"
+}
+
+start() {
+    ebegin "Starting netmonitor"
+    start-stop-daemon --start --background --make-pidfile --pidfile /var/run/netmonitor.pid --exec $command -- $command_args
+    eend $?
+}
+
+stop() {
+    ebegin "Stopping netmonitor"
+    start-stop-daemon --stop --pidfile /var/run/netmonitor.pid
+    eend $?
+}
 EOL
 fi
 
 # 设置开机自启并启动服务
 echo "设置开机自启并启动服务..."
-systemctl daemon-reload
-systemctl enable netmonitor
-systemctl start netmonitor
+chmod +x /opt/NetMonitor/netmonitor
+rc-update add netmonitor
+rc-service netmonitor start
 
 # 提示systemd操作命令
 echo "NetMonitor已安装并启动，可以使用以下命令操作："
-echo "运行 systemctl restart netmonitor 重启服务"
-echo "运行 systemctl stop netmonitor 停止服务"
-echo "运行 systemctl status netmonitor 查看服务状态"
+echo "运行 rc-service netmonitor restart 重启服务"
+echo "运行 rc-service netmonitor stop 停止服务"
+echo "运行 rc-service netmonitor status 查看服务状态"
 
 echo "安装完成！"
