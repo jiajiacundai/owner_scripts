@@ -27,3 +27,7 @@ wget -O tcp.sh --no-check-certificate https://iii.sanguoguoguo.free.hr/https://r
 ```shell
 wget -O acme.sh --no-check-certificate https://iii.sanguoguoguo.free.hr/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/acme.sh && chmod +x acme.sh && bash acme.sh
 ```
+# netMonitor.sh
+```shell
+wget -O alpine_netMonitor.sh --no-check-certificate https://iii.sanguoguoguo.free.hr/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/alpine_netMonitor.sh && chmod +x alpine_netMonitor.sh && bash acme.shalpine_netMonitor.sh
+```
