@@ -62,7 +62,7 @@ fi
 # 通过github api从https://github.com/nodeseeker/netMonitor/releases获取最新的版本号，下载地址
 cd /opt/NetMonitor
 echo "获取最新版本号..."
-version=$(curl -s https://api.github.com/repos/nodeseeker/netMonitor/releases/latest | grep "tag_name" | cut -d\" -f4)
+version=$(curl -s https://githubapi.xinxin.f5.si/repos/nodeseeker/netMonitor/releases/latest | grep "tag_name" | cut -d\" -f4)
 arch=$(uname -m)
 case $arch in
     x86_64) arch="amd64" ;;
