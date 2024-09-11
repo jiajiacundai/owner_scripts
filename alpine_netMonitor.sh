@@ -17,11 +17,12 @@ if [ -d "/opt/NetMonitor" ] || [ -f "/etc/systemd/system/netmonitor.service" ]; 
         1)
             if command -v apk &> /dev/null; then
                 rc-service netmonitor stop
+                rm -f /etc/init.d/netmonitor
             else
                 systemctl stop netmonitor
+                rm -f /etc/systemd/system/netmonitor.service
             fi
             rm -rf /opt/NetMonitor
-            rm -f /etc/systemd/system/netmonitor.service
             ;;
         2)
             if command -v apk &> /dev/null; then
