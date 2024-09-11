@@ -156,12 +156,49 @@ if [ "$choice" == "1" ]; then
 EOL
 fi
 
-# 创建rc-service服务
-echo "创建rc-service服务文件..."
-if [ "$choice" == "1" ]; then
-    # 创建rc-service服务
+# Debian和RedHat系列设置函数
+create_systemd_service() {
+    echo "创建systemd服务文件..."
+    
+    # 创建systemd服务
+    cat <<EOL > /etc/systemd/system/netmonitor.service
+[Unit]
+Description=Network Bandwidth Monitor
+After=network.target
+
+[Service]
+WorkingDirectory=/opt/NetMonitor
+ExecStart=/opt/NetMonitor/netmonitor -c /opt/NetMonitor/config.json
+StandardOutput=file:/opt/NetMonitor/output.log
+StandardError=file:/opt/NetMonitor/error.log
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOL
+
+    # 设置开机自启并启动服务
+    echo "设置开机自启并启动服务..."
+    systemctl daemon-reload
+    systemctl enable netmonitor
+    systemctl start netmonitor
+
+    # 提示systemd操作命令
+    echo "NetMonitor已安装并启动，可以使用以下命令操作："
+    echo "运行 systemctl restart netmonitor 重启服务"
+    echo "运行 systemctl stop netmonitor 停止服务"
+    echo "运行 systemctl status netmonitor 查看服务状态"
+
+    echo "安装完成！"
+}
+
+# alpine设置函数
+create_rc_service() {
     echo "创建rc-service服务文件..."
-    cat <<EOL > /etc/init.d/netmonitor.service
+    
+    # 创建rc-service服务
+    cat <<EOL > /etc/init.d/netmonitor
 #!/sbin/openrc-run
 
 description="Network Bandwidth Monitor"
@@ -183,28 +220,41 @@ start_pre() {
 
 start() {
     ebegin "Starting netmonitor"
-    start-stop-daemon --start --background --make-pidfile --pidfile /var/run/netmonitor.pid --exec $command -- $command_args
-    eend $?
+    start-stop-daemon --start --background --make-pidfile --pidfile /var/run/netmonitor.pid --exec \$command -- \$command_args
+    eend \$?
 }
 
 stop() {
     ebegin "Stopping netmonitor"
     start-stop-daemon --stop --pidfile /var/run/netmonitor.pid
-    eend $?
+    eend \$?
 }
 EOL
+
+    # 设置开机自启并启动服务
+    echo "设置开机自启并启动服务..."
+    chmod +x /etc/init.d/netmonitor
+    rc-update add netmonitor
+    rc-service netmonitor start
+
+    # 提示rc-service操作命令
+    echo "NetMonitor已安装并启动，可以使用以下命令操作："
+    echo "运行 rc-service netmonitor restart 重启服务"
+    echo "运行 rc-service netmonitor stop 停止服务"
+    echo "运行 rc-service netmonitor status 查看服务状态"
+
+    echo "安装完成！"
+}
+
+# linux初始化启动配置
+if command -v apt-get &> /dev/null; then
+    create_systemd_service
+elif command -v yum &> /dev/null; then
+    create_systemd_service
+elif command -v apk &> /dev/null; then
+    create_rc_service
+else
+    distribution=$(grep "^ID=" /etc/*release | cut -d= -f2 | tr -d \")
+    echo "不支持 $distribution 系统，请提出issue进行添加"
+    exit 1
 fi
-
-# 设置开机自启并启动服务
-echo "设置开机自启并启动服务..."
-chmod +x /opt/NetMonitor/netmonitor
-rc-update add netmonitor
-rc-service netmonitor start
-
-# 提示systemd操作命令
-echo "NetMonitor已安装并启动，可以使用以下命令操作："
-echo "运行 rc-service netmonitor restart 重启服务"
-echo "运行 rc-service netmonitor stop 停止服务"
-echo "运行 rc-service netmonitor status 查看服务状态"
-
-echo "安装完成！"
