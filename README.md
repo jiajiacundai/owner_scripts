@@ -31,3 +31,7 @@ wget -O acme.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://ra
 ```shell
 wget -O alpine_netMonitor.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/alpine_netMonitor.sh && chmod +x alpine_netMonitor.sh && bash alpine_netMonitor.sh
 ```
+# 卸载iycms命令
+```shell
+wget -O alpine_netMonitor.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/uninstall_iycms.sh && chmod +x uninstall_iycms.sh && bash uninstall_iycms.sh
+```
