@@ -33,5 +33,5 @@ wget -O alpine_netMonitor.sh --no-check-certificate https://iii.sanguoguoguo.us.
 ```
 # 卸载iycms命令
 ```shell
-wget -O alpine_netMonitor.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/uninstall_iycms.sh && chmod +x uninstall_iycms.sh && bash uninstall_iycms.sh
+wget -O uninstall_iycms.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/uninstall_iycms.sh && chmod +x uninstall_iycms.sh && bash uninstall_iycms.sh
 ```
