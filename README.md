@@ -35,3 +35,7 @@ wget -O alpine_netMonitor.sh --no-check-certificate https://iii.sanguoguoguo.us.
 ```shell
 wget -O uninstall_iycms.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/uninstall_iycms.sh && chmod +x uninstall_iycms.sh && bash uninstall_iycms.sh
 ```
+# 一键换源脚本
+```shell
+wget -O linux_yuan.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/linux_yuan.sh && chmod +x linux_yuan.sh && bash linux_yuan.sh
+```
