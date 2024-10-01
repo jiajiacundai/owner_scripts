@@ -39,3 +39,7 @@ wget -O uninstall_iycms.sh --no-check-certificate https://iii.sanguoguoguo.us.kg
 ```shell
 wget -O linux_yuan.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/linux_yuan.sh && chmod +x linux_yuan.sh && bash linux_yuan.sh
 ```
+# 时间同步，支持centos7，debian/ubantu，alpine系统
+```shell
+wget -O ntp_install.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/ntp_install.sh && chmod +x ntp_install.sh && bash ntp_install.sh
+```
