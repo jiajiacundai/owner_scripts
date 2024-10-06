@@ -92,6 +92,8 @@ fi
 # 配置编译 nginx
 _BASE_DIR="$PWD"
 _BASE_DIR="${_BASE_DIR:0:( ${#_BASE_DIR} - 4 )}"
+echo "BASE_DIR：$_BASE_DIR"
+exit 0
 
 if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
     ./configure \
