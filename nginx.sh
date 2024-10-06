@@ -1,61 +1,42 @@
 #!/bin/bash
 
-# 检测操作系统
-if [ -f /etc/centos-release ]; then
-    OS="centos"
-elif [ -f /etc/debian_version ]; then
-    OS="debian"
+# 检测操作系统类型 (CentOS, Debian, Ubuntu)
+if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    OS=$ID
 else
     echo "Unsupported OS"
     exit 1
 fi
 
 echo -e "install prebuilt nginx from package manager?[y/n]: \c"
-read _INSTALL_FROM_PACKAGE_MANAGER
+read _INSTALL_FROM_PACKAGE
 
-if [[ "y" == "${_INSTALL_FROM_PACKAGE_MANAGER}" ]]; then
-
-    if [[ "${OS}" == "centos" ]]; then
-        # CentOS - Install prebuilt Nginx via yum
+if [[ "y" == "${_INSTALL_FROM_PACKAGE}" ]]; then
+    if [[ "$OS" == "centos" ]]; then
+        # CentOS 安装
         yum -y install yum-utils
-
-        # Create /etc/yum.repos.d/nginx.repo
-        cat <<EOL > /etc/yum.repos.d/nginx.repo
-[nginx-stable]
-name=nginx stable repo
-baseurl=http://nginx.org/packages/centos/\$releasever/\$basearch/
-gpgcheck=1
-enabled=1
-gpgkey=https://nginx.org/keys/nginx_signing.key
-
-[nginx-mainline]
-name=nginx mainline repo
-baseurl=http://nginx.org/packages/mainline/centos/\$releasever/\$basearch/
-gpgcheck=1
-enabled=0
-gpgkey=https://nginx.org/keys/nginx_signing.key
-EOL
-
-        yum install -y nginx
-
-    elif [[ "${OS}" == "debian" ]]; then
-        # Debian/Ubuntu - Install prebuilt Nginx via apt
+        touch /etc/yum.repos.d/nginx.repo
+        echo '[nginx-stable]' >> /etc/yum.repos.d/nginx.repo
+        echo 'name=nginx stable repo' >> /etc/yum.repos.d/nginx.repo
+        echo 'baseurl=http://nginx.org/packages/centos/$releasever/$basearch/' >> /etc/yum.repos.d/nginx.repo
+        echo 'gpgcheck=1' >> /etc/yum.repos.d/nginx.repo
+        echo 'enabled=1' >> /etc/yum.repos.d/nginx.repo
+        echo 'gpgkey=https://nginx.org/keys/nginx_signing.key' >> /etc/yum.repos.d/nginx.repo
+        yum install nginx
+    elif [[ "$OS" == "debian" || "$OS" == "ubuntu" ]]; then
+        # Debian/Ubuntu 安装
         apt update
-        apt install -y gnupg2 ca-certificates lsb-release wget
-
-        wget http://nginx.org/keys/nginx_signing.key
-        apt-key add nginx_signing.key
-
-        # Create /etc/apt/sources.list.d/nginx.list
-        cat <<EOL > /etc/apt/sources.list.d/nginx.list
-deb http://nginx.org/packages/debian/ `lsb_release -cs` nginx
-deb-src http://nginx.org/packages/debian/ `lsb_release -cs` nginx
-EOL
-
+        apt install -y curl gnupg2 ca-certificates lsb-release
+        echo "deb http://nginx.org/packages/$OS $(lsb_release -cs) nginx" \
+            | tee /etc/apt/sources.list.d/nginx.list
+        curl -fsSL https://nginx.org/keys/nginx_signing.key | apt-key add -
         apt update
         apt install -y nginx
+    else
+        echo "Unsupported OS for package installation"
+        exit 1
     fi
-
     exit
 fi
 
@@ -65,21 +46,22 @@ read _AS_A_SYSTEM_SERVICE
 echo -e "need update PCRE, ZLIB, OPENSSL packages by package manager?[y/n]: \c"
 read _UPDATE_BY_PACKAGE_MANAGER
 
+# 下载并解压 nginx 源码
 wget https://nginx.org/download/nginx-1.14.2.tar.gz
 tar zxf nginx-1.14.2.tar.gz
 mv nginx-1.14.2 nginx-1.14.2-src
 cd nginx-1.14.2-src/
 
-# ======================== 可选, 如果系统已有则不必安装 ========================
+# 安装依赖或编译相关库
 if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
-    if [[ "${OS}" == "centos" ]]; then
+    if [[ "$OS" == "centos" ]]; then
         yum -y install make gcc yum-utils pcre pcre-devel zlib zlib-devel openssl openssl-devel
-    elif [[ "${OS}" == "debian" ]]; then
+    elif [[ "$OS" == "debian" || "$OS" == "ubuntu" ]]; then
         apt update
-        apt install -y build-essential libpcre3 libpcre3-dev zlib1g zlib1g-dev openssl libssl-dev
+        apt install -y build-essential libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev
     fi
 else
-    # Manually compile and install PCRE, Zlib, and OpenSSL
+    # 自行编译安装 PCRE, Zlib, OpenSSL (可选)
     wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.42.tar.gz
     tar -zxf pcre-8.42.tar.gz
     cd pcre-8.42
@@ -98,14 +80,16 @@ else
 
     wget http://www.openssl.org/source/openssl-1.1.1b.tar.gz
     tar -zxf openssl-1.1.1b.tar.gz
-    cd openssl-1.1.1b
+    mv openssl-1.1.1b openssl-1.1.1b-src
+    mkdir openssl-1.1.1b
+    cd openssl-1.1.1b-src
     ./Configure linux-x86_64 --prefix=$PWD
     make
     make install
     cd ../
 fi
 
-mkdir ../nginx-1.14.2/
+# 配置编译 nginx
 _BASE_DIR="$PWD"
 _BASE_DIR="${_BASE_DIR:0:( ${#_BASE_DIR} - 4 )}"
 
@@ -125,7 +109,7 @@ else
     --prefix=${_BASE_DIR} \
     --with-pcre=$PWD/pcre-8.42 \
     --with-zlib=$PWD/zlib-1.2.11 \
-    --with-openssl=$PWD/openssl-1.1.1b \
+    --with-openssl=$PWD/openssl-1.1.1b-src \
     --with-http_ssl_module \
     --with-stream \
     --with-stream_ssl_module \
@@ -139,31 +123,33 @@ fi
 make
 make install
 
+# 注册 Nginx 成为系统服务
 if [[ "y" == "${_AS_A_SYSTEM_SERVICE}" ]]; then
-
-    if [[ "${OS}" == "centos" ]]; then
+    if [[ "$OS" == "centos" ]]; then
         SERVICE_PATH="/usr/lib/systemd/system/nginx.service"
-    elif [[ "${OS}" == "debian" ]]; then
+    else
         SERVICE_PATH="/lib/systemd/system/nginx.service"
     fi
 
-    cat <<EOL > ${SERVICE_PATH}
-[Unit]
-Description=nginx - high performance web server
-Documentation=http://nginx.org/en/docs/
-After=network-online.target remote-fs.target nss-lookup.target
-Wants=network-online.target
+    touch $SERVICE_PATH
 
-[Service]
-Type=forking
-PIDFile=${_BASE_DIR}/nginx.pid
-ExecStart=${_BASE_DIR}/sbin/nginx -c ${_BASE_DIR}/nginx.conf
-ExecReload=${_BASE_DIR}/sbin/nginx -s reload
-ExecStop=${_BASE_DIR}/sbin/nginx -s quit
+    echo "[Unit]" >> $SERVICE_PATH
+    echo "Description=nginx - high performance web server" >> $SERVICE_PATH
+    echo "Documentation=http://nginx.org/en/docs/" >> $SERVICE_PATH
+    echo "After=network-online.target remote-fs.target nss-lookup.target" >> $SERVICE_PATH
+    echo "Wants=network-online.target" >> $SERVICE_PATH
+    echo "" >> $SERVICE_PATH
 
-[Install]
-WantedBy=multi-user.target
-EOL
+    echo "[Service]" >> $SERVICE_PATH
+    echo "Type=forking" >> $SERVICE_PATH
+    echo "PIDFile=${_BASE_DIR}/nginx.pid" >> $SERVICE_PATH
+    echo "ExecStart=${_BASE_DIR}/sbin/nginx -c ${_BASE_DIR}/nginx.conf" >> $SERVICE_PATH
+    echo "ExecReload=${_BASE_DIR}/sbin/nginx -s reload" >> $SERVICE_PATH
+    echo "ExecStop=${_BASE_DIR}/sbin/nginx -s quit" >> $SERVICE_PATH
+    echo "" >> $SERVICE_PATH
+
+    echo "[Install]" >> $SERVICE_PATH
+    echo "WantedBy=multi-user.target" >> $SERVICE_PATH
 
     systemctl daemon-reload
 fi
