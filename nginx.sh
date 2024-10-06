@@ -47,10 +47,10 @@ echo -e "need update PCRE, ZLIB, OPENSSL packages by package manager?[y/n]: \c"
 read _UPDATE_BY_PACKAGE_MANAGER
 
 # 下载并解压 nginx 源码
-wget https://nginx.org/download/nginx-1.14.2.tar.gz
-tar zxf nginx-1.14.2.tar.gz
-mv nginx-1.14.2 nginx-1.14.2-src
-cd nginx-1.14.2-src/
+wget https://nginx.org/download/nginx-1.8.1.tar.gz
+tar zxf nginx-1.8.1.tar.gz
+mv nginx-1.8.1 nginx-1.8.1-src
+cd nginx-1.8.1-src/
 
 # 安装依赖或编译相关库
 if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
