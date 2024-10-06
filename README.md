@@ -43,3 +43,7 @@ wget -O linux_yuan.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/http
 ```shell
 wget -O ntp_install.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/ntp_install.sh && chmod +x ntp_install.sh && bash ntp_install.sh
 ```
+# nginx.sh
+```shell
+wget -O nginx.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/nginx.sh && chmod +x nginx.sh && bash nginx.sh
+```
