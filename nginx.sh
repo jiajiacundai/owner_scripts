@@ -62,7 +62,7 @@ if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
     fi
 else
     # 自行编译安装 PCRE, Zlib, OpenSSL (可选)
-    wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.42.tar.gz
+    wget https://mirrors.aliyun.com/exim/pcre/pcre-8.42.tar.gz
     tar -zxf pcre-8.42.tar.gz
     cd pcre-8.42
     ./configure
