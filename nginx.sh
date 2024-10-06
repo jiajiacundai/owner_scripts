@@ -70,7 +70,7 @@ else
     make install
     cd ../
 
-    wget http://zlib.net/zlib-1.2.11.tar.gz
+    wget https://www.zlib.net/zlib-1.3.1.tar.gz
     tar -zxf zlib-1.2.11.tar.gz
     cd zlib-1.2.11
     ./configure
