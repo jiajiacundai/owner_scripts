@@ -70,9 +70,9 @@ else
     make install
     cd ../
 
-    wget https://dl.sanguoguoguo.us.kg/https://www.zlib.net/zlib-1.3.1.tar.gz
-    tar -zxf zlib-1.3.1.tar.gz
-    cd zlib-1.3.1
+    wget https://dl.sanguoguoguo.us.kg/https://zlib.net/fossils/zlib-1.2.11.tar.gz
+    tar -zxf zlib-1.2.11.tar.gz
+    cd zlib-1.2.11
     ./configure
     make
     make install
