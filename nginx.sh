@@ -30,7 +30,7 @@ if [[ "y" == "${_INSTALL_FROM_PACKAGE}" ]]; then
         apt install -y curl gnupg2 ca-certificates lsb-release
         echo "deb http://nginx.org/packages/$OS $(lsb_release -cs) nginx" \
             | tee /etc/apt/sources.list.d/nginx.list
-        curl -fsSL https://dl.sanguoguoguo.us.kg/https://nginx.org/keys/nginx_signing.key | apt-key add -
+        curl -fsSL https://nginx.org/keys/nginx_signing.key | apt-key add -
         apt update
         apt install -y nginx
     else
@@ -62,7 +62,7 @@ if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
     fi
 else
     # 自行编译安装 PCRE, Zlib, OpenSSL (可选)
-    wget https://dl.sanguoguoguo.us.kg/https://mirrors.aliyun.com/exim/pcre/pcre-8.42.tar.gz
+    wget https://mirrors.aliyun.com/exim/pcre/pcre-8.42.tar.gz
     tar -zxf pcre-8.42.tar.gz
     cd pcre-8.42
     ./configure
@@ -70,7 +70,7 @@ else
     make install
     cd ../
 
-    wget https://dl.sanguoguoguo.us.kg/https://zlib.net/fossils/zlib-1.2.11.tar.gz
+    wget https://zlib.net/fossils/zlib-1.2.11.tar.gz
     tar -zxf zlib-1.2.11.tar.gz
     cd zlib-1.2.11
     ./configure
@@ -78,7 +78,7 @@ else
     make install
     cd ../
 
-    wget https://dl.sanguoguoguo.us.kg/http://www.openssl.org/source/openssl-1.1.1b.tar.gz
+    wget http://www.openssl.org/source/openssl-1.1.1b.tar.gz
     tar -zxf openssl-1.1.1b.tar.gz
     mv openssl-1.1.1b openssl-1.1.1b-src
     mkdir openssl-1.1.1b
