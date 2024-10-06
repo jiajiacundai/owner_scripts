@@ -2,7 +2,7 @@
 
 ck_ok() {
     if [ $? -ne 0 ]; then
-        echo "\$1 error."
+        echo "$1 error."
         exit 1
     fi
 }
@@ -16,7 +16,7 @@ download_ng() {
     if [ -f nginx-1.23.0.tar.gz ]; then
         echo "当前目录已经存在 nginx-1.23.0.tar.gz"
         echo "检测 md5"
-        ng_md5=$(md5sum nginx-1.23.0.tar.gz | awk '{print \$1}')
+        ng_md5=$(md5sum nginx-1.23.0.tar.gz | awk '{print $1}')
         if [ "${ng_md5}" == 'e8768e388f26fb3d56a3c88055345219' ]; then
             return 0
         else
@@ -36,8 +36,9 @@ install_ng() {
     cd nginx-1.23.0
 
     echo "安装依赖"
+    
     if which yum >/dev/null 2>&1; then
-        ## RHEL/Rocky
+        ## RHEL/Rocky/CentOS
         for pkg in gcc make pcre-devel zlib-devel openssl-devel; do
             if ! rpm -q $pkg >/dev/null 2>&1; then
                 sudo yum install -y $pkg
@@ -49,9 +50,9 @@ install_ng() {
     fi
 
     if which apt >/dev/null 2>&1; then
-        ## ubuntu
-        for pkg in make libpcre++-dev libssl-dev zlib1g-dev; do
-            if ! dpkg -l $pkg >/dev/null 2>&1; then
+        ## Debian/Ubuntu
+        for pkg in gcc make libpcre++-dev libssl-dev zlib1g-dev; do
+            if ! dpkg -l | grep -qw $pkg; then
                 sudo apt install -y $pkg
                 ck_ok "apt 安装 $pkg"
             else
