@@ -132,7 +132,7 @@ if [[ "y" == "${_AS_A_SYSTEM_SERVICE}" ]]; then
 
     touch $SERVICE_PATH
 
-    echo "[Unit]" >> $SERVICE_PATH
+    echo "[Unit]" > $SERVICE_PATH
     echo "Description=nginx - high performance web server" >> $SERVICE_PATH
     echo "Documentation=http://nginx.org/en/docs/" >> $SERVICE_PATH
     echo "After=network-online.target remote-fs.target nss-lookup.target" >> $SERVICE_PATH
@@ -141,8 +141,8 @@ if [[ "y" == "${_AS_A_SYSTEM_SERVICE}" ]]; then
 
     echo "[Service]" >> $SERVICE_PATH
     echo "Type=forking" >> $SERVICE_PATH
-    echo "PIDFile=${_BASE_DIR}/nginx.pid" >> $SERVICE_PATH
-    echo "ExecStart=${_BASE_DIR}/sbin/nginx -c ${_BASE_DIR}/nginx.conf" >> $SERVICE_PATH
+    echo "PIDFile=${_BASE_DIR}/logs/nginx.pid" >> $SERVICE_PATH
+    echo "ExecStart=${_BASE_DIR}/sbin/nginx -c ${_BASE_DIR}/conf/nginx.conf" >> $SERVICE_PATH
     echo "ExecReload=${_BASE_DIR}/sbin/nginx -s reload" >> $SERVICE_PATH
     echo "ExecStop=${_BASE_DIR}/sbin/nginx -s quit" >> $SERVICE_PATH
     echo "" >> $SERVICE_PATH
