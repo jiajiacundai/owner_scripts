@@ -65,7 +65,7 @@ else
     wget https://mirrors.aliyun.com/exim/pcre/pcre-8.42.tar.gz
     tar -zxf pcre-8.42.tar.gz
     cd pcre-8.42
-    ./configure
+    ./configure --prefix=/usr/local/pcre
     make
     make install
     cd ../
@@ -73,7 +73,7 @@ else
     wget https://zlib.net/fossils/zlib-1.2.11.tar.gz
     tar -zxf zlib-1.2.11.tar.gz
     cd zlib-1.2.11
-    ./configure
+    ./configure --prefix=/usr/local/zlib
     make
     make install
     cd ../
@@ -83,7 +83,7 @@ else
     mv openssl-1.1.1b openssl-1.1.1b-src
     mkdir openssl-1.1.1b
     cd openssl-1.1.1b-src
-    ./Configure linux-x86_64 --prefix=$PWD
+    ./Configure --prefix=/usr/local/openssl
     make
     make install
     cd ../
@@ -92,12 +92,12 @@ fi
 # 配置编译 nginx
 _BASE_DIR="$PWD"
 _BASE_DIR="${_BASE_DIR:0:( ${#_BASE_DIR} - 4 )}"
-echo "BASE_DIR：$_BASE_DIR"
-exit 0
+# echo "BASE_DIR：$_BASE_DIR"
+# exit 0
 
 if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
     ./configure \
-    --prefix=${_BASE_DIR} \
+    --prefix=/usr/local/nginx \
     --with-http_ssl_module \
     --with-stream \
     --with-stream_ssl_module \
@@ -108,10 +108,10 @@ if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
     --with-threads
 else
     ./configure \
-    --prefix=${_BASE_DIR} \
-    --with-pcre=$PWD/pcre-8.42 \
-    --with-zlib=$PWD/zlib-1.2.11 \
-    --with-openssl=$PWD/openssl-1.1.1b-src \
+    --prefix=/usr/local/nginx \
+    --with-pcre=/usr/local/pcre \
+    --with-zlib=/usr/local/zlib \
+    --with-openssl=/usr/local/openssl \
     --with-http_ssl_module \
     --with-stream \
     --with-stream_ssl_module \
