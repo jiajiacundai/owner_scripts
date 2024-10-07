@@ -150,5 +150,10 @@ if [[ "y" == "${_AS_A_SYSTEM_SERVICE}" ]]; then
     echo "[Install]" >> $SERVICE_PATH
     echo "WantedBy=multi-user.target" >> $SERVICE_PATH
 
+    source /etc/profile
     systemctl daemon-reload
+    sudo systemctl restart nginx
+    sudo systemctl enable nginx
+    sudo systemctl status nginx
+
 fi
