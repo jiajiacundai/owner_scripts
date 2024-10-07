@@ -61,6 +61,7 @@ if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
         apt install -y build-essential libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev
     fi
 else
+    yum -y install make gcc libxml2 libxml2-devel libxslt libxslt-devel
     # 自行编译安装 PCRE, Zlib, OpenSSL (可选)
     wget https://mirrors.aliyun.com/exim/pcre/pcre-8.42.tar.gz
     tar -zxf pcre-8.42.tar.gz
