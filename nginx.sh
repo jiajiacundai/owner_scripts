@@ -105,6 +105,7 @@ _BASE_DIR="/usr/local/nginx"
 if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
     ./configure \
     --prefix=${_BASE_DIR} \
+    --with-openssl=${_BASE_DIR}/src/openssl \
     --with-http_ssl_module \
     --with-stream \
     --with-stream_ssl_module \
@@ -113,26 +114,22 @@ if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
     --with-file-aio \
     --with-http_v2_module \
     --with-threads \
-    --add-module=${_BASE_DIR}/src/ngx_devel_kit \
-    --add-module=${_BASE_DIR}/src/lua_nginx_module \
-    --add-module=${_BASE_DIR}/src/ngx_cache_purge \
-    --with-openssl=${_BASE_DIR}/src/openssl \
-    --with-stream_ssl_preread_module \
+    --add-module=$PWD/src/ngx_devel_kit \
+    --add-module=$PWD/src/ngx_cache_purge \
+    --add-module=$PWD/src/ngx_http_substitutions_filter_module \
+    --add-module=$PWD/src/nginx-dav-ext-module \
     --with-http_stub_status_module \
-    --with-http_image_filter_module \
     --with-http_gzip_static_module \
     --with-http_gunzip_module \
-    --with-ipv6 \
     --with-http_sub_module \
     --with-http_flv_module \
     --with-http_addition_module \
     --with-http_realip_module \
     --with-http_mp4_module \
-    --add-module=${_BASE_DIR}/src/ngx_http_substitutions_filter_module-master \
-    --with-ld-opt=-Wl,-E \
-    --with-cc-opt=-Wno-error \
+    --with-stream_ssl_preread_module \
     --with-http_dav_module \
-    --add-module=${_BASE_DIR}/src/nginx-dav-ext-module
+    --with-ld-opt="-Wl,-E" \
+    --with-cc-opt="-Wno-error"
 else
     ./configure \
     --prefix=${_BASE_DIR} \
