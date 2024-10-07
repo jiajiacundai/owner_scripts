@@ -55,7 +55,8 @@ cd nginx-1.24.0-src/
 # 安装依赖或编译相关库
 if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
     if [[ "$OS" == "centos" ]]; then
-        yum -y install git make gcc sudo yum-utils pcre pcre-devel zlib zlib-devel openssl openssl-devel
+        yum update
+        yum -y install git make gcc sudo yum-utils pcre pcre-devel zlib zlib-devel openssl openssl-devel libxml2 libxml2-devel libxslt libxslt-devel
     elif [[ "$OS" == "debian" || "$OS" == "ubuntu" ]]; then
         apt update
         apt install -y git sudo build-essential libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev
