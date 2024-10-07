@@ -166,6 +166,7 @@ fi
 make
 make install
 echo 'export PATH=$PATH:/usr/local/nginx/sbin' | tee -a /etc/profile
+source /etc/profile
 
 # 注册 Nginx 成为系统服务
 if [[ "y" == "${_AS_A_SYSTEM_SERVICE}" ]]; then
@@ -195,7 +196,6 @@ if [[ "y" == "${_AS_A_SYSTEM_SERVICE}" ]]; then
     echo "[Install]" >> $SERVICE_PATH
     echo "WantedBy=multi-user.target" >> $SERVICE_PATH
 
-    source /etc/profile
     systemctl daemon-reload
     sudo systemctl restart nginx
     sudo systemctl enable nginx
