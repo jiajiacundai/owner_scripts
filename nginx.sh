@@ -92,7 +92,7 @@ fi
 _BASE_DIR="/usr/local/nginx"
 
 if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
-    ./configure \
+./configure \
     --prefix=${_BASE_DIR} \
     --with-http_ssl_module \
     --with-stream \
@@ -101,9 +101,30 @@ if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
     --with-mail_ssl_module \
     --with-file-aio \
     --with-http_v2_module \
-    --with-threads
+    --with-threads \
+    --add-module=${_BASE_DIR}/src/ngx_devel_kit \
+    --add-module=${_BASE_DIR}/src/lua_nginx_module \
+    --add-module=${_BASE_DIR}/src/ngx_cache_purge \
+    --with-openssl=${_BASE_DIR}/src/openssl \
+    --with-pcre=pcre-8.43 \
+    --with-stream_ssl_preread_module \
+    --with-http_stub_status_module \
+    --with-http_image_filter_module \
+    --with-http_gzip_static_module \
+    --with-http_gunzip_module \
+    --with-ipv6 \
+    --with-http_sub_module \
+    --with-http_flv_module \
+    --with-http_addition_module \
+    --with-http_realip_module \
+    --with-http_mp4_module \
+    --add-module=${_BASE_DIR}/src/ngx_http_substitutions_filter_module-master \
+    --with-ld-opt=-Wl,-E \
+    --with-cc-opt=-Wno-error \
+    --with-http_dav_module \
+    --add-module=${_BASE_DIR}/src/nginx-dav-ext-module
 else
-    ./configure \
+./configure \
     --prefix=${_BASE_DIR} \
     --with-pcre=$PWD/pcre-8.42 \
     --with-zlib=$PWD/zlib-1.2.11 \
@@ -115,7 +136,28 @@ else
     --with-mail_ssl_module \
     --with-file-aio \
     --with-http_v2_module \
-    --with-threads
+    --with-threads \
+    --user=www \
+    --group=www \
+    --add-module=$PWD/src/ngx_devel_kit \
+    --add-module=$PWD/src/lua_nginx_module \
+    --add-module=$PWD/src/ngx_cache_purge \
+    --add-module=$PWD/src/ngx_http_substitutions_filter_module-master \
+    --add-module=$PWD/src/nginx-dav-ext-module \
+    --with-http_stub_status_module \
+    --with-http_image_filter_module \
+    --with-http_gzip_static_module \
+    --with-http_gunzip_module \
+    --with-ipv6 \
+    --with-http_sub_module \
+    --with-http_flv_module \
+    --with-http_addition_module \
+    --with-http_realip_module \
+    --with-http_mp4_module \
+    --with-stream_ssl_preread_module \
+    --with-http_dav_module \
+    --with-ld-opt=-Wl,-E \
+    --with-cc-opt=-Wno-error
 fi
 
 make
