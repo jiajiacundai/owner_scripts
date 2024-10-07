@@ -68,7 +68,7 @@ else
     ./configure --prefix=/usr/local/pcre
     make
     make install
-    cd ../
+    cd ..
 
     wget https://zlib.net/fossils/zlib-1.2.11.tar.gz
     tar -zxf zlib-1.2.11.tar.gz
@@ -76,7 +76,7 @@ else
     ./configure --prefix=/usr/local/zlib
     make
     make install
-    cd ../
+    cd ..
 
     wget http://www.openssl.org/source/openssl-1.1.1b.tar.gz
     tar -zxf openssl-1.1.1b.tar.gz
@@ -86,7 +86,7 @@ else
     ./Configure --prefix=/usr/local/openssl
     make
     make install
-    cd ../
+    cd ..
 fi
 
 # 配置编译 nginx
