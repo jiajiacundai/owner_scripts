@@ -93,7 +93,7 @@ _BASE_DIR="/usr/local/nginx"
 
 if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
     ./configure \
-    --prefix=/usr/local/nginx \
+    --prefix=${_BASE_DIR} \
     --with-http_ssl_module \
     --with-stream \
     --with-stream_ssl_module \
@@ -103,8 +103,8 @@ if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
     --with-http_v2_module \
     --with-threads
 else
-./configure \
-    --prefix=/usr/local/nginx \
+    ./configure \
+    --prefix=${_BASE_DIR} \
     --with-pcre=$PWD/pcre-8.42 \
     --with-zlib=$PWD/zlib-1.2.11 \
     --with-openssl=$PWD/openssl-1.1.1b-src \
