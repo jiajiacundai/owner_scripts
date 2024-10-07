@@ -107,11 +107,11 @@ if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
     --with-http_v2_module \
     --with-threads
 else
-    ./configure \
+./configure \
     --prefix=/usr/local/nginx \
-    --with-pcre=/usr/local/pcre \
-    --with-zlib=/usr/local/zlib \
-    --with-openssl=/usr/local/openssl \
+    --with-pcre=$PWD/pcre-8.42 \
+    --with-zlib=$PWD/zlib-1.2.11 \
+    --with-openssl=$PWD/openssl-1.1.1b-src \
     --with-http_ssl_module \
     --with-stream \
     --with-stream_ssl_module \
