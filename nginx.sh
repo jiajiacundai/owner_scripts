@@ -47,7 +47,7 @@ echo -e "need update PCRE, ZLIB, OPENSSL packages by package manager?[y/n]: \c"
 read _UPDATE_BY_PACKAGE_MANAGER
 
 # 下载并解压 nginx 源码
-wget https://nginx.org/download/nginx-1.24.0.tar.gz
+wget --no-check-certificate https://nginx.org/download/nginx-1.24.0.tar.gz
 tar zxf nginx-1.24.0.tar.gz
 mv nginx-1.24.0 nginx-1.24.0-src
 cd nginx-1.24.0-src/
@@ -63,7 +63,7 @@ if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
 else
     yum -y install git make gcc sudo libxml2 libxml2-devel libxslt libxslt-devel
     # 自行编译安装 PCRE, Zlib, OpenSSL (可选)
-    wget https://mirrors.aliyun.com/exim/pcre/pcre-8.42.tar.gz
+    wget --no-check-certificate https://mirrors.aliyun.com/exim/pcre/pcre-8.42.tar.gz
     tar -zxf pcre-8.42.tar.gz
     cd pcre-8.42
     ./configure --prefix=/usr/local/pcre
@@ -71,7 +71,7 @@ else
     make install
     cd ..
 
-    wget https://zlib.net/fossils/zlib-1.2.11.tar.gz
+    wget --no-check-certificate https://zlib.net/fossils/zlib-1.2.11.tar.gz
     tar -zxf zlib-1.2.11.tar.gz
     cd zlib-1.2.11
     ./configure --prefix=/usr/local/zlib
@@ -79,7 +79,7 @@ else
     make install
     cd ..
 
-    wget http://www.openssl.org/source/openssl-1.1.1b.tar.gz
+    wget --no-check-certificate http://www.openssl.org/source/openssl-1.1.1b.tar.gz
     tar -zxf openssl-1.1.1b.tar.gz
     mv openssl-1.1.1b openssl-1.1.1b-src
     cd openssl-1.1.1b-src
