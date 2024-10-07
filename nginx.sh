@@ -48,9 +48,9 @@ read _UPDATE_BY_PACKAGE_MANAGER
 
 # 下载并解压 nginx 源码
 wget https://nginx.org/download/nginx-1.14.2.tar.gz
-tar zxf nginx-1.14.2.tar.gz
-mv nginx-1.14.2 nginx-1.14.2-src
-cd nginx-1.14.2-src/
+tar zxf nginx-1.24.0.tar.gz
+mv nginx-1.24.0 nginx-1.14.2-src
+cd nginx-1.24.0-src/
 
 # 安装依赖或编译相关库
 if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
