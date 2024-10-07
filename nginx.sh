@@ -92,7 +92,7 @@ fi
 _BASE_DIR="/usr/local/nginx"
 
 if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
-./configure \
+    ./configure \
     --prefix=${_BASE_DIR} \
     --with-http_ssl_module \
     --with-stream \
@@ -106,7 +106,6 @@ if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
     --add-module=${_BASE_DIR}/src/lua_nginx_module \
     --add-module=${_BASE_DIR}/src/ngx_cache_purge \
     --with-openssl=${_BASE_DIR}/src/openssl \
-    --with-pcre=pcre-8.43 \
     --with-stream_ssl_preread_module \
     --with-http_stub_status_module \
     --with-http_image_filter_module \
@@ -124,7 +123,7 @@ if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
     --with-http_dav_module \
     --add-module=${_BASE_DIR}/src/nginx-dav-ext-module
 else
-./configure \
+    ./configure \
     --prefix=${_BASE_DIR} \
     --with-pcre=$PWD/pcre-8.42 \
     --with-zlib=$PWD/zlib-1.2.11 \
