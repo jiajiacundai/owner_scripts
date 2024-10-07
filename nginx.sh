@@ -82,7 +82,7 @@ else
     tar -zxf openssl-1.1.1b.tar.gz
     mv openssl-1.1.1b openssl-1.1.1b-src
     cd openssl-1.1.1b-src
-    ./Configure --prefix=/usr/local/openssl
+    ./Configure linux-x86_64 --prefix=/usr/local/openssl
     make
     make install
     cd ..
