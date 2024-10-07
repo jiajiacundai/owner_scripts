@@ -120,6 +120,7 @@ fi
 
 make
 make install
+echo 'export PATH=$PATH:/usr/local/nginx/sbin' | tee -a /etc/profile
 
 # 注册 Nginx 成为系统服务
 if [[ "y" == "${_AS_A_SYSTEM_SERVICE}" ]]; then
