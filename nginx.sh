@@ -106,7 +106,6 @@ _BASE_DIR="/usr/local/nginx"
 if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
     ./configure \
     --prefix=${_BASE_DIR} \
-    --with-openssl=${_BASE_DIR}/src/openssl \
     --with-http_ssl_module \
     --with-stream \
     --with-stream_ssl_module \
