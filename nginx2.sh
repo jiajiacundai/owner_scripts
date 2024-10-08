@@ -111,6 +111,13 @@ make install
 echo 'export PATH=$PATH:/usr/local/nginx/sbin' | tee -a /etc/profile
 source /etc/profile
 
+# 集中删除所有安装包和源码目录
+# cd /usr/local/src
+# rm -rf LuaJIT-${LUAJIT_VERSION}.tar.gz LuaJIT-${LUAJIT_VERSION} \
+#     pcre-${pcre_version}.tar.gz pcre-${pcre_version} \
+#     openssl-${OPENSSL_VERSION}.tar.gz openssl-${OPENSSL_VERSION} \
+#     nginx-${NGINX_VERSION}.tar.gz nginx-${NGINX_VERSION}
+    
 # 注册 Nginx 成为系统服务
 _AS_A_SYSTEM_SERVICE="y"
 if [[ "y" == "${_AS_A_SYSTEM_SERVICE}" ]]; then
