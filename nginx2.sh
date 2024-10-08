@@ -108,11 +108,11 @@ make -j${cpuCore}
 make install
 
 # 集中删除所有安装包和源码目录
-cd /usr/local/src
-rm -rf LuaJIT-${LUAJIT_VERSION}.tar.gz LuaJIT-${LUAJIT_VERSION} \
-    pcre-${pcre_version}.tar.gz pcre-${pcre_version} \
-    openssl-${OPENSSL_VERSION}.tar.gz openssl-${OPENSSL_VERSION} \
-    nginx-${NGINX_VERSION}.tar.gz nginx-${NGINX_VERSION}
+# cd /usr/local/src
+# rm -rf LuaJIT-${LUAJIT_VERSION}.tar.gz LuaJIT-${LUAJIT_VERSION} \
+#     pcre-${pcre_version}.tar.gz pcre-${pcre_version} \
+#     openssl-${OPENSSL_VERSION}.tar.gz openssl-${OPENSSL_VERSION} \
+#     nginx-${NGINX_VERSION}.tar.gz nginx-${NGINX_VERSION}
     
 # 刷新 Nginx 环境变量
 echo 'export PATH=$PATH:/usr/local/nginx/sbin' | tee -a /etc/profile
