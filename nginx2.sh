@@ -42,11 +42,11 @@ if [[ "$install_luajit" == "y" || "$install_luajit" == "Y" ]]; then
     cd LuaJIT-${LUAJIT_VERSION}
     make && make install
     cd ..
-
+    
     # 设置 LuaJIT 环境变量
     export LUAJIT_LIB=/usr/local/lib
     export LUAJIT_INC=/usr/local/include/luajit-2.1/
-    export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+    export LD_LIBRARY_PATH=/usr/local/lib/:$LD_LIBRARY_PATH
 
     # 克隆 lua-nginx-module 模块
     mkdir -p ${Setup_Path}/src
@@ -98,15 +98,14 @@ cd nginx-${NGINX_VERSION}
 --with-ld-opt="-Wl,-E" \
 --with-cc-opt="-Wno-error"
 
-# 如果选择安装 LuaJIT，添加 lua-nginx-module 模块，确保环境变量可见
+# 如果选择安装 LuaJIT，添加 lua-nginx-module 模块
 if [[ "$install_luajit" == "y" || "$install_luajit" == "Y" ]]; then
-    LUAJIT_LIB=/usr/local/lib LUAJIT_INC=/usr/local/include/luajit-2.1/ LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH \
     ./configure --add-module=${Setup_Path}/src/lua-nginx-module
 fi
 
-# # 编译并安装 Nginx
-# make -j${cpuCore}
-# make install
+# 编译并安装 Nginx
+make -j${cpuCore}
+make install
 
 # # 刷新 Nginx 环境变量
 # echo 'export PATH=$PATH:/usr/local/nginx/sbin' | tee -a /etc/profile
