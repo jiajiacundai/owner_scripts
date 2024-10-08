@@ -10,8 +10,26 @@ NGINX_VERSION="1.24.0"
 NGX_CACHE_PURGE_VERSION="2.3"
 SUBSTITUTIONS_FILTER_MODULE="ngx_http_substitutions_filter_module"
 
-# 安装依赖包
-yum install -y gcc gcc-c++ make wget zlib-devel pcre-devel openssl-devel libxslt-devel gd-devel geoip-devel perl-ExtUtils-Embed git
+# 检查系统类型
+if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    OS=$ID
+    OS_VERSION=$VERSION_ID
+else
+    echo "操作系统不受支持"
+    exit 1
+fi
+
+# 根据系统类型安装依赖包
+if [[ "$OS" == "centos" ]]; then
+    yum install -y gcc gcc-c++ make wget zlib-devel pcre-devel openssl-devel libxslt-devel gd-devel geoip-devel perl-ExtUtils-Embed git
+elif [[ "$OS" == "ubuntu" || "$OS" == "debian" ]]; then
+    apt update
+    apt install -y build-essential wget zlib1g-dev libpcre3 libpcre3-dev openssl libssl-dev libxslt1-dev libgd-dev libgeoip-dev perl git
+else
+    echo "操作系统不受支持"
+    exit 1
+fi
 
 # 下载并安装 LuaJIT
 cd /usr/local/src
