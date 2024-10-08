@@ -3,17 +3,19 @@
 # 定义变量
 Setup_Path="/usr/local/nginx"
 cpuCore=$(nproc)
-pcre_version="8.44"
+pcre_version="8.42"
 LUAJIT_VERSION="2.1.0-beta3"
 OPENSSL_VERSION="1.1.1w"
 NGINX_VERSION="1.24.0"
+NGX_CACHE_PURGE_VERSION="2.3"
+SUBSTITUTIONS_FILTER_MODULE="ngx_http_substitutions_filter_module"
 
 # 安装依赖包
-yum install -y gcc gcc-c++ make wget zlib-devel pcre-devel openssl-devel libxslt-devel gd-devel geoip-devel perl-ExtUtils-Embed
+yum install -y gcc gcc-c++ make wget zlib-devel pcre-devel openssl-devel libxslt-devel gd-devel geoip-devel perl-ExtUtils-Embed git
 
 # 下载并安装 LuaJIT
 cd /usr/local/src
-wget http://luajit.org/download/LuaJIT-${LUAJIT_VERSION}.tar.gz
+wget --no-check-certificate https://www.isres.com/file/LuaJIT-${LUAJIT_VERSION}.tar.gz
 tar zxvf LuaJIT-${LUAJIT_VERSION}.tar.gz
 cd LuaJIT-${LUAJIT_VERSION}
 make && make install
@@ -25,21 +27,29 @@ export LD_LIBRARY_PATH=/usr/local/lib/:$LD_LIBRARY_PATH
 
 # 下载并安装 PCRE
 cd /usr/local/src
-wget https://ftp.pcre.org/pub/pcre/pcre-${pcre_version}.tar.gz
+wget --no-check-certificate https://mirrors.aliyun.com/exim/pcre/pcre-${pcre_version}.tar.gz
 tar zxvf pcre-${pcre_version}.tar.gz
 
 # 下载并安装 OpenSSL
 cd /usr/local/src
-wget https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz
+wget --no-check-certificate https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz
 tar zxvf openssl-${OPENSSL_VERSION}.tar.gz
+
+# 克隆 ngx_cache_purge 模块
+mkdir -p ${Setup_Path}/src
+cd ${Setup_Path}/src
+git clone https://github.com/FRiCKLE/ngx_cache_purge.git
+
+# 克隆 ngx_http_substitutions_filter_module 模块
+git clone https://github.com/yaoweibin/ngx_http_substitutions_filter_module.git
 
 # 下载 Nginx 源码
 cd /usr/local/src
-wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
+wget --no-check-certificate http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
 tar zxvf nginx-${NGINX_VERSION}.tar.gz
 cd nginx-${NGINX_VERSION}
 
-# 配置 Nginx 编译选项（去掉用户组和 IPv6 支持）
+# 配置 Nginx 编译选项
 ./configure --prefix=${Setup_Path} \
 --add-module=${Setup_Path}/src/ngx_cache_purge \
 --with-openssl=/usr/local/src/openssl-${OPENSSL_VERSION} \
@@ -55,7 +65,7 @@ cd nginx-${NGINX_VERSION}
 --with-http_realip_module \
 --with-http_mp4_module \
 --with-http_auth_request_module \
---add-module=${Setup_Path}/src/ngx_http_substitutions_filter_module-master \
+--add-module=${Setup_Path}/src/ngx_http_substitutions_filter_module \
 --with-ld-opt="-Wl,-E" \
 --with-cc-opt="-Wno-error"
 
