@@ -74,7 +74,7 @@ make -j${cpuCore}
 make install
 
 # 刷新 Nginx 环境变量
-echo 'export PATH=$PATH:/www/my-nginx/sbin' | tee -a /etc/profile
+echo 'export PATH=$PATH:/usr/local/nginx' | tee -a /etc/profile
 source /etc/profile
 
 # 注册 Nginx 成为系统服务
