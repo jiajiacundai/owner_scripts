@@ -74,7 +74,7 @@ make -j${cpuCore}
 make install
 
 # 刷新 Nginx 环境变量
-echo 'export PATH=$PATH:/usr/local/nginx' | tee -a /etc/profile
+echo 'export PATH=$PATH:/usr/local/nginx/sbin' | tee -a /etc/profile
 source /etc/profile
 
 # 注册 Nginx 成为系统服务
@@ -110,8 +110,8 @@ if [[ "y" == "${_AS_A_SYSTEM_SERVICE}" ]]; then
     sudo systemctl restart nginx
     sudo systemctl enable nginx
     sudo systemctl status nginx
-    echo "请手动输入命令刷新nginx环境变量：source /etc/profile"
 
 fi
 
+echo "请手动输入命令刷新nginx环境变量：source /etc/profile"
 echo "Nginx ${NGINX_VERSION} 安装完成并已启动！"
