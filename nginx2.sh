@@ -31,28 +31,17 @@ else
     exit 1
 fi
 
-# 提示用户是否安装 LuaJIT
-read -p "是否安装 LuaJIT (y/n)? " install_luajit
+# 下载并安装 LuaJIT
+cd /usr/local/src
+wget --no-check-certificate https://www.isres.com/file/LuaJIT-${LUAJIT_VERSION}.tar.gz
+tar zxvf LuaJIT-${LUAJIT_VERSION}.tar.gz
+cd LuaJIT-${LUAJIT_VERSION}
+make && make install
 
-if [[ "$install_luajit" == "y" || "$install_luajit" == "Y" ]]; then
-    # 下载并安装 LuaJIT
-    cd /usr/local/src
-    wget --no-check-certificate https://www.isres.com/file/LuaJIT-${LUAJIT_VERSION}.tar.gz
-    tar zxvf LuaJIT-${LUAJIT_VERSION}.tar.gz
-    cd LuaJIT-${LUAJIT_VERSION}
-    make && make install
-    cd ..
-    
-    # 设置 LuaJIT 环境变量
-    export LUAJIT_LIB=/usr/local/lib
-    export LUAJIT_INC=/usr/local/include/luajit-2.1/
-    export LD_LIBRARY_PATH=/usr/local/lib/:$LD_LIBRARY_PATH
-
-    # 克隆 lua-nginx-module 模块
-    mkdir -p ${Setup_Path}/src
-    cd ${Setup_Path}/src
-    git clone https://github.com/openresty/lua-nginx-module.git
-fi
+# 设置 LuaJIT 环境变量
+export LUAJIT_LIB=/usr/local/lib
+export LUAJIT_INC=/usr/local/include/luajit-2.1/
+export LD_LIBRARY_PATH=/usr/local/lib/:$LD_LIBRARY_PATH
 
 # 下载并安装 PCRE
 cd /usr/local/src
@@ -76,9 +65,9 @@ git clone https://github.com/yaoweibin/ngx_http_substitutions_filter_module.git
 cd /usr/local/src
 wget --no-check-certificate http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
 tar zxvf nginx-${NGINX_VERSION}.tar.gz
+cd nginx-${NGINX_VERSION}
 
 # 配置 Nginx 编译选项
-cd nginx-${NGINX_VERSION}
 ./configure --prefix=${Setup_Path} \
 --add-module=${Setup_Path}/src/ngx_cache_purge \
 --with-openssl=/usr/local/src/openssl-${OPENSSL_VERSION} \
@@ -98,22 +87,10 @@ cd nginx-${NGINX_VERSION}
 --with-ld-opt="-Wl,-E" \
 --with-cc-opt="-Wno-error"
 
-# 如果选择安装 LuaJIT，添加 lua-nginx-module 模块
-if [[ "$install_luajit" == "y" || "$install_luajit" == "Y" ]]; then
-    ./configure --add-module=${Setup_Path}/src/lua-nginx-module
-fi
-
 # 编译并安装 Nginx
 make -j${cpuCore}
 make install
 
-# 集中删除所有安装包和源码目录
-# cd /usr/local/src
-# rm -rf LuaJIT-${LUAJIT_VERSION}.tar.gz LuaJIT-${LUAJIT_VERSION} \
-#     pcre-${pcre_version}.tar.gz pcre-${pcre_version} \
-#     openssl-${OPENSSL_VERSION}.tar.gz openssl-${OPENSSL_VERSION} \
-#     nginx-${NGINX_VERSION}.tar.gz nginx-${NGINX_VERSION}
-    
 # 刷新 Nginx 环境变量
 echo 'export PATH=$PATH:/usr/local/nginx/sbin' | tee -a /etc/profile
 source /etc/profile
