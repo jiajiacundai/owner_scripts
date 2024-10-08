@@ -31,17 +31,28 @@ else
     exit 1
 fi
 
-# 下载并安装 LuaJIT
-cd /usr/local/src
-wget --no-check-certificate https://www.isres.com/file/LuaJIT-${LUAJIT_VERSION}.tar.gz
-tar zxvf LuaJIT-${LUAJIT_VERSION}.tar.gz
-cd LuaJIT-${LUAJIT_VERSION}
-make && make install
+# 提示用户是否安装 LuaJIT
+read -p "是否安装 LuaJIT (y/n)? " install_luajit
 
-# 设置 LuaJIT 环境变量
-export LUAJIT_LIB=/usr/local/lib
-export LUAJIT_INC=/usr/local/include/luajit-2.1/
-export LD_LIBRARY_PATH=/usr/local/lib/:$LD_LIBRARY_PATH
+if [[ "$install_luajit" == "y" || "$install_luajit" == "Y" ]]; then
+    # 下载并安装 LuaJIT
+    cd /usr/local/src
+    wget --no-check-certificate https://www.isres.com/file/LuaJIT-${LUAJIT_VERSION}.tar.gz
+    tar zxvf LuaJIT-${LUAJIT_VERSION}.tar.gz
+    cd LuaJIT-${LUAJIT_VERSION}
+    make && make install
+    cd ..
+    
+    # 设置 LuaJIT 环境变量
+    export LUAJIT_LIB=/usr/local/lib
+    export LUAJIT_INC=/usr/local/include/luajit-2.1/
+    export LD_LIBRARY_PATH=/usr/local/lib/:$LD_LIBRARY_PATH
+
+    # 克隆 lua-nginx-module 模块
+    mkdir -p ${Setup_Path}/src
+    cd ${Setup_Path}/src
+    git clone https://github.com/openresty/lua-nginx-module.git
+fi
 
 # 下载并安装 PCRE
 cd /usr/local/src
@@ -65,9 +76,9 @@ git clone https://github.com/yaoweibin/ngx_http_substitutions_filter_module.git
 cd /usr/local/src
 wget --no-check-certificate http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
 tar zxvf nginx-${NGINX_VERSION}.tar.gz
-cd nginx-${NGINX_VERSION}
 
 # 配置 Nginx 编译选项
+cd nginx-${NGINX_VERSION}
 ./configure --prefix=${Setup_Path} \
 --add-module=${Setup_Path}/src/ngx_cache_purge \
 --with-openssl=/usr/local/src/openssl-${OPENSSL_VERSION} \
@@ -86,6 +97,11 @@ cd nginx-${NGINX_VERSION}
 --add-module=${Setup_Path}/src/ngx_http_substitutions_filter_module \
 --with-ld-opt="-Wl,-E" \
 --with-cc-opt="-Wno-error"
+
+# 如果选择安装 LuaJIT，添加 lua-nginx-module 模块
+if [[ "$install_luajit" == "y" || "$install_luajit" == "Y" ]]; then
+    ./configure --add-module=${Setup_Path}/src/lua-nginx-module
+fi
 
 # 编译并安装 Nginx
 make -j${cpuCore}
