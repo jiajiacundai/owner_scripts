@@ -78,7 +78,7 @@ echo 'export PATH=$PATH:/usr/local/nginx' | tee -a /etc/profile
 source /etc/profile
 
 # 注册 Nginx 成为系统服务
-_AS_A_SYSTEM_SERVICE = "y"
+_AS_A_SYSTEM_SERVICE="y"
 if [[ "y" == "${_AS_A_SYSTEM_SERVICE}" ]]; then
     if [[ "$OS" == "centos" ]]; then
         SERVICE_PATH="/usr/lib/systemd/system/nginx.service"
