@@ -47,10 +47,11 @@ echo -e "need update PCRE, ZLIB, OPENSSL packages by package manager?[y/n]: \c"
 read _UPDATE_BY_PACKAGE_MANAGER
 
 # 下载并解压 nginx 源码
+mkdir -p /www/my-nginx && chmod -R 777 /www/ && cd /www/
 wget --no-check-certificate https://nginx.org/download/nginx-1.24.0.tar.gz
 tar zxf nginx-1.24.0.tar.gz
 mv nginx-1.24.0 nginx-1.24.0-src
-cd nginx-1.24.0-src/
+cd nginx-1.24.0-src
 
 # 安装依赖或编译相关库
 if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
@@ -62,12 +63,14 @@ if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
         apt install -y git sudo build-essential libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev
     fi
 else
+    mkdir -p /www/my-nginx/dependence && cd /www/my-nginx/dependence
     yum -y install git make gcc sudo libxml2 libxml2-devel libxslt libxslt-devel
     # 自行编译安装 PCRE, Zlib, OpenSSL (可选)
     wget --no-check-certificate https://mirrors.aliyun.com/exim/pcre/pcre-8.42.tar.gz
     tar -zxf pcre-8.42.tar.gz
     cd pcre-8.42
-    ./configure --prefix=/usr/local/pcre
+    mkdir pcre
+    ./configure --prefix=$PWD/pcre
     make
     make install
     cd ..
@@ -75,7 +78,8 @@ else
     wget --no-check-certificate https://zlib.net/fossils/zlib-1.2.11.tar.gz
     tar -zxf zlib-1.2.11.tar.gz
     cd zlib-1.2.11
-    ./configure --prefix=/usr/local/zlib
+    mkdir zlib
+    ./configure --prefix=$PWD/zlib
     make
     make install
     cd ..
@@ -84,24 +88,24 @@ else
     tar -zxf openssl-1.1.1b.tar.gz
     mv openssl-1.1.1b openssl-1.1.1b-src
     cd openssl-1.1.1b-src
-    ./Configure linux-x86_64 --prefix=/usr/local/openssl
+    mkdir openssl
+    ./Configure linux-x86_64 --prefix=$PWD/openssl
     make
     make install
-    cd ..
+    cd /www/nginx-1.24.0-src
 fi
 
 # 安装nginx模块
-mkdir -p src
-cd src
+mkdir -p /www/my-nginx/src && cd /www/my-nginx/src
 git clone https://github.com/vision5/ngx_devel_kit.git
 # git clone https://github.com/openresty/lua-nginx-module.git
 git clone https://github.com/FRiCKLE/ngx_cache_purge.git
 git clone https://github.com/yaoweibin/ngx_http_substitutions_filter_module.git
 git clone https://github.com/arut/nginx-dav-ext-module.git
-cd ..
+cd /www/nginx-1.24.0-src
 
 # 配置编译 nginx
-_BASE_DIR="/usr/local/nginx"
+_BASE_DIR="/www/my-nginx"
 
 if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
     ./configure \
@@ -114,10 +118,10 @@ if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
     --with-file-aio \
     --with-http_v2_module \
     --with-threads \
-    --add-module=$PWD/src/ngx_devel_kit \
-    --add-module=$PWD/src/ngx_cache_purge \
-    --add-module=$PWD/src/ngx_http_substitutions_filter_module \
-    --add-module=$PWD/src/nginx-dav-ext-module \
+    --add-module=/www/my-nginx/src/ngx_devel_kit \
+    --add-module=/www/my-nginx/src/ngx_cache_purge \
+    --add-module=/www/my-nginx/src/ngx_http_substitutions_filter_module \
+    --add-module=/www/my-nginx/src/nginx-dav-ext-module \
     --with-http_stub_status_module \
     --with-http_gzip_static_module \
     --with-http_gunzip_module \
@@ -133,9 +137,9 @@ if [[ "y" == "${_UPDATE_BY_PACKAGE_MANAGER}" ]]; then
 else
     ./configure \
     --prefix=${_BASE_DIR} \
-    --with-pcre=$PWD/pcre-8.42 \
-    --with-zlib=$PWD/zlib-1.2.11 \
-    --with-openssl=$PWD/openssl-1.1.1b-src \
+    --with-pcre=/www/my-nginx/dependence/pcre-8.42 \
+    --with-zlib=/www/my-nginx/dependence/zlib-1.2.11 \
+    --with-openssl=/www/my-nginx/dependence/openssl-1.1.1b-src \
     --with-http_ssl_module \
     --with-stream \
     --with-stream_ssl_module \
@@ -144,10 +148,10 @@ else
     --with-file-aio \
     --with-http_v2_module \
     --with-threads \
-    --add-module=$PWD/src/ngx_devel_kit \
-    --add-module=$PWD/src/ngx_cache_purge \
-    --add-module=$PWD/src/ngx_http_substitutions_filter_module \
-    --add-module=$PWD/src/nginx-dav-ext-module \
+    --add-module=/www/my-nginx/src/ngx_devel_kit \
+    --add-module=/www/my-nginx/src/ngx_cache_purge \
+    --add-module=/www/my-nginx/src/ngx_http_substitutions_filter_module \
+    --add-module=/www/my-nginx/src/nginx-dav-ext-module \
     --with-http_stub_status_module \
     --with-http_gzip_static_module \
     --with-http_gunzip_module \
@@ -165,7 +169,7 @@ fi
 
 make
 make install
-echo 'export PATH=$PATH:/usr/local/nginx/sbin' | tee -a /etc/profile
+echo 'export PATH=$PATH:/www/my-nginx/sbin' | tee -a /etc/profile
 source /etc/profile
 
 # 注册 Nginx 成为系统服务
