@@ -1,5 +1,4 @@
 #!/bin/bash
-# 根据宝塔改编过来安装脚本
 
 # 定义变量
 Setup_Path="/usr/local/nginx"
@@ -7,7 +6,7 @@ cpuCore=$(nproc)
 pcre_version="8.44"
 LUAJIT_VERSION="2.1.0-beta3"
 OPENSSL_VERSION="1.1.1w"
-NGINX_VERSION="1.64.0"
+NGINX_VERSION="1.24.0"
 
 # 安装依赖包
 yum install -y gcc gcc-c++ make wget zlib-devel pcre-devel openssl-devel libxslt-devel gd-devel geoip-devel perl-ExtUtils-Embed
