@@ -204,5 +204,6 @@ if [[ "y" == "${_AS_A_SYSTEM_SERVICE}" ]]; then
     sudo systemctl restart nginx
     sudo systemctl enable nginx
     sudo systemctl status nginx
+    echo "请手动输入命令刷新nginx环境变量：source /etc/profile"
 
 fi
