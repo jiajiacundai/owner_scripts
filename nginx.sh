@@ -92,7 +92,7 @@ else
     ./Configure linux-x86_64 --prefix=$PWD/openssl
     make
     make install
-    cd /www/nginx-1.24.0-src
+    cd /www/nginx-1.24.0-src && rm -f /www/my-nginx/dependence/*.tar.gz
 fi
 
 # 安装nginx模块
