@@ -107,45 +107,49 @@ fi
 make -j${cpuCore}
 make install
 
-# # 刷新 Nginx 环境变量
-# echo 'export PATH=$PATH:/usr/local/nginx/sbin' | tee -a /etc/profile
-# source /etc/profile
+# 刷新 Nginx 环境变量
+echo 'export PATH=$PATH:/usr/local/nginx/sbin' | tee -a /etc/profile
+source /etc/profile
 
-# # 注册 Nginx 成为系统服务
-# _AS_A_SYSTEM_SERVICE="y"
-# if [[ "y" == "${_AS_A_SYSTEM_SERVICE}" ]]; then
-#     if [[ "$OS" == "centos" ]]; then
-#         SERVICE_PATH="/usr/lib/systemd/system/nginx.service"
-#     else
-#         SERVICE_PATH="/lib/systemd/system/nginx.service"
-#     fi
+# 注册 Nginx 成为系统服务
+_AS_A_SYSTEM_SERVICE="y"
+if [[ "y" == "${_AS_A_SYSTEM_SERVICE}" ]]; then
+    if [[ "$OS" == "centos" ]]; then
+        SERVICE_PATH="/usr/lib/systemd/system/nginx.service"
+    else
+        SERVICE_PATH="/lib/systemd/system/nginx.service"
+    fi
 
-#     touch $SERVICE_PATH
+    touch $SERVICE_PATH
 
-#     echo "[Unit]" > $SERVICE_PATH
-#     echo "Description=nginx - high performance web server" >> $SERVICE_PATH
-#     echo "Documentation=http://nginx.org/en/docs/" >> $SERVICE_PATH
-#     echo "After=network-online.target remote-fs.target nss-lookup.target" >> $SERVICE_PATH
-#     echo "Wants=network-online.target" >> $SERVICE_PATH
-#     echo "" >> $SERVICE_PATH
+    echo "[Unit]" > $SERVICE_PATH
+    echo "Description=nginx - high performance web server" >> $SERVICE_PATH
+    echo "Documentation=http://nginx.org/en/docs/" >> $SERVICE_PATH
+    echo "After=network-online.target remote-fs.target nss-lookup.target" >> $SERVICE_PATH
+    echo "Wants=network-online.target" >> $SERVICE_PATH
+    echo "" >> $SERVICE_PATH
 
-#     echo "[Service]" >> $SERVICE_PATH
-#     echo "Type=forking" >> $SERVICE_PATH
-#     echo "PIDFile=${Setup_Path}/logs/nginx.pid" >> $SERVICE_PATH
-#     echo "ExecStart=${Setup_Path}/sbin/nginx -c ${Setup_Path}/conf/nginx.conf" >> $SERVICE_PATH
-#     echo "ExecReload=${Setup_Path}/sbin/nginx -s reload" >> $SERVICE_PATH
-#     echo "ExecStop=${Setup_Path}/sbin/nginx -s quit" >> $SERVICE_PATH
-#     echo "" >> $SERVICE_PATH
+    echo "[Service]" >> $SERVICE_PATH
+    echo "Type=forking" >> $SERVICE_PATH
+    echo "PIDFile=${Setup_Path}/logs/nginx.pid" >> $SERVICE_PATH
+    echo "ExecStart=${Setup_Path}/sbin/nginx -c ${Setup_Path}/conf/nginx.conf" >> $SERVICE_PATH
+    echo "ExecReload=${Setup_Path}/sbin/nginx -s reload" >> $SERVICE_PATH
+    echo "ExecStop=${Setup_Path}/sbin/nginx -s quit" >> $SERVICE_PATH
+    echo "" >> $SERVICE_PATH
 
-#     echo "[Install]" >> $SERVICE_PATH
-#     echo "WantedBy=multi-user.target" >> $SERVICE_PATH
+    echo "[Install]" >> $SERVICE_PATH
+    echo "WantedBy=multi-user.target" >> $SERVICE_PATH
 
-#     systemctl daemon-reload
-#     sudo systemctl restart nginx
-#     sudo systemctl enable nginx
-#     sudo systemctl status nginx
+    systemctl daemon-reload
+    sudo systemctl restart nginx
+    sudo systemctl enable nginx
+    sudo systemctl status nginx
 
-# fi
+fi
 
-# echo "请手动输入命令刷新nginx环境变量：source /etc/profile"
-# echo "Nginx ${NGINX_VERSION} 安装完成并已启动！"
+echo "请手动以下命令刷新nginx环境变量，前三条是安装LuaJIT后一键执行，最后一条必须执行"
+echo "export LUAJIT_LIB=/usr/local/lib"
+echo "export LUAJIT_INC=/usr/local/include/luajit-2.1/"
+echo "export LD_LIBRARY_PATH=/usr/local/lib/:$LD_LIBRARY_PATH"
+echo "source /etc/profile"
+echo "Nginx ${NGINX_VERSION} 安装完成并已启动！"
