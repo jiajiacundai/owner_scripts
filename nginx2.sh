@@ -42,8 +42,6 @@ if [[ "$install_luajit" == "y" || "$install_luajit" == "Y" ]]; then
     cd LuaJIT-${LUAJIT_VERSION}
     make && make install
     cd ..
-    rm -rf LuaJIT-${LUAJIT_VERSION}*
-    # 清理 LuaJIT 下载包
 
     # 设置 LuaJIT 环境变量
     export LUAJIT_LIB=/usr/local/lib
@@ -61,16 +59,12 @@ cd /usr/local/src
 wget --no-check-certificate https://mirrors.aliyun.com/exim/pcre/pcre-${pcre_version}.tar.gz
 tar zxvf pcre-${pcre_version}.tar.gz
 cd ..
-rm -rf pcre-${pcre_version}.tar.gz
-# 清理 PCRE 下载包
 
 # 下载并安装 OpenSSL
 cd /usr/local/src
 wget --no-check-certificate https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz
 tar zxvf openssl-${OPENSSL_VERSION}.tar.gz
 cd ..
-rm -rf openssl-${OPENSSL_VERSION}.tar.gz
-# 清理 OpenSSL 下载包
 
 # 克隆 ngx_cache_purge 模块
 mkdir -p ${Setup_Path}/src
@@ -85,8 +79,6 @@ cd /usr/local/src
 wget --no-check-certificate http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
 tar zxvf nginx-${NGINX_VERSION}.tar.gz
 cd .. 
-rm -rf nginx-${NGINX_VERSION}.tar.gz
-# 清理 Nginx 下载包
 
 # 配置 Nginx 编译选项
 cd nginx-${NGINX_VERSION}
