@@ -31,36 +31,38 @@ else
     exit 1
 fi
 
-# 下载并安装 LuaJIT
-cd /usr/local/src
-wget --no-check-certificate https://www.isres.com/file/LuaJIT-${LUAJIT_VERSION}.tar.gz
-tar zxvf LuaJIT-${LUAJIT_VERSION}.tar.gz
-cd LuaJIT-${LUAJIT_VERSION}
-make && make install
-cd ..
-rm -rf LuaJIT-${LUAJIT_VERSION}*
-# 清理 LuaJIT 下载包
+# 提示用户是否安装 LuaJIT
+read -p "是否安装 LuaJIT (y/n)? " install_luajit
 
-# 设置 LuaJIT 环境变量
-export LUAJIT_LIB=/usr/local/lib
-export LUAJIT_INC=/usr/local/include/luajit-2.1/
-export LD_LIBRARY_PATH=/usr/local/lib/:$LD_LIBRARY_PATH
+if [[ "$install_luajit" == "y" || "$install_luajit" == "Y" ]]; then
+    # 下载并安装 LuaJIT
+    cd /usr/local/src
+    wget --no-check-certificate https://www.isres.com/file/LuaJIT-${LUAJIT_VERSION}.tar.gz
+    tar zxvf LuaJIT-${LUAJIT_VERSION}.tar.gz
+    cd LuaJIT-${LUAJIT_VERSION}
+    make && make install
+    cd ..
+
+    # 设置 LuaJIT 环境变量
+    export LUAJIT_LIB=/usr/local/lib
+    export LUAJIT_INC=/usr/local/include/luajit-2.1/
+    export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+
+    # 克隆 lua-nginx-module 模块
+    mkdir -p ${Setup_Path}/src
+    cd ${Setup_Path}/src
+    git clone https://github.com/openresty/lua-nginx-module.git
+fi
 
 # 下载并安装 PCRE
 cd /usr/local/src
 wget --no-check-certificate https://mirrors.aliyun.com/exim/pcre/pcre-${pcre_version}.tar.gz
 tar zxvf pcre-${pcre_version}.tar.gz
-cd ..
-rm -rf pcre-${pcre_version}.tar.gz
-# 清理 PCRE 下载包
 
 # 下载并安装 OpenSSL
 cd /usr/local/src
 wget --no-check-certificate https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz
 tar zxvf openssl-${OPENSSL_VERSION}.tar.gz
-cd ..
-rm -rf openssl-${OPENSSL_VERSION}.tar.gz
-# 清理 OpenSSL 下载包
 
 # 克隆 ngx_cache_purge 模块
 mkdir -p ${Setup_Path}/src
@@ -70,42 +72,37 @@ git clone https://github.com/FRiCKLE/ngx_cache_purge.git
 # 克隆 ngx_http_substitutions_filter_module 模块
 git clone https://github.com/yaoweibin/ngx_http_substitutions_filter_module.git
 
-# 克隆 lua-nginx-module 模块
-git clone https://github.com/openresty/lua-nginx-module.git
-
 # 下载 Nginx 源码
 cd /usr/local/src
 wget --no-check-certificate http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
 tar zxvf nginx-${NGINX_VERSION}.tar.gz
-cd .. 
-rm -rf nginx-${NGINX_VERSION}.tar.gz
-# 清理 Nginx 下载包
 
-# # 配置 Nginx 编译选项
-# cd nginx-${NGINX_VERSION}
-# ./configure --prefix=${Setup_Path} \
-# --add-module=${Setup_Path}/src/ngx_cache_purge \
-# --with-openssl=/usr/local/src/openssl-${OPENSSL_VERSION} \
-# --with-pcre=/usr/local/src/pcre-${pcre_version} \
-# --with-http_stub_status_module \
-# --with-http_ssl_module \
-# --with-http_image_filter_module \
-# --with-http_gzip_static_module \
-# --with-http_gunzip_module \
-# --with-http_sub_module \
-# --with-http_flv_module \
-# --with-http_addition_module \
-# --with-http_realip_module \
-# --with-http_mp4_module \
-# --with-http_auth_request_module \
-# --add-module=${Setup_Path}/src/ngx_http_substitutions_filter_module \
-# --with-ld-opt="-Wl,-E" \
-# --with-cc-opt="-Wno-error"
+# 配置 Nginx 编译选项
+cd nginx-${NGINX_VERSION}
+./configure --prefix=${Setup_Path} \
+--add-module=${Setup_Path}/src/ngx_cache_purge \
+--with-openssl=/usr/local/src/openssl-${OPENSSL_VERSION} \
+--with-pcre=/usr/local/src/pcre-${pcre_version} \
+--with-http_stub_status_module \
+--with-http_ssl_module \
+--with-http_image_filter_module \
+--with-http_gzip_static_module \
+--with-http_gunzip_module \
+--with-http_sub_module \
+--with-http_flv_module \
+--with-http_addition_module \
+--with-http_realip_module \
+--with-http_mp4_module \
+--with-http_auth_request_module \
+--add-module=${Setup_Path}/src/ngx_http_substitutions_filter_module \
+--with-ld-opt="-Wl,-E" \
+--with-cc-opt="-Wno-error"
 
-# # 如果选择安装 LuaJIT，添加 lua-nginx-module 模块
-# if [[ "$install_luajit" == "y" || "$install_luajit" == "Y" ]]; then
-#     ./configure --add-module=${Setup_Path}/src/lua-nginx-module
-# fi
+# 如果选择安装 LuaJIT，添加 lua-nginx-module 模块，确保环境变量可见
+if [[ "$install_luajit" == "y" || "$install_luajit" == "Y" ]]; then
+    LUAJIT_LIB=/usr/local/lib LUAJIT_INC=/usr/local/include/luajit-2.1/ LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH \
+    ./configure --add-module=${Setup_Path}/src/lua-nginx-module
+fi
 
 # # 编译并安装 Nginx
 # make -j${cpuCore}
