@@ -41,13 +41,13 @@ if [[ "$install_luajit" == "y" || "$install_luajit" == "Y" ]]; then
     wget --no-check-certificate https://www.isres.com/file/LuaJIT-${LUAJIT_VERSION}.tar.gz
     tar zxvf LuaJIT-${LUAJIT_VERSION}.tar.gz
     cd LuaJIT-${LUAJIT_VERSION}
-    make
-    make install PREFIX=/usr/local/LuaJIT
+    make && make install PREFIX=/usr/local/LuaJIT
     cd ..
     
     # 设置 LuaJIT 环境变量
     echo "export LUAJIT_LIB=/usr/local/LuaJIT/lib" >> /etc/profile
     echo "export LUAJIT_INC=/usr/local/LuaJIT/include/luajit-2.1" >> /etc/profile
+    eval "$(source /etc/profile; env)"
     source /etc/profile
 
 fi
