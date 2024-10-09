@@ -40,18 +40,14 @@ if [[ "$install_luajit" == "y" || "$install_luajit" == "Y" ]]; then
     wget --no-check-certificate https://www.isres.com/file/LuaJIT-${LUAJIT_VERSION}.tar.gz
     tar zxvf LuaJIT-${LUAJIT_VERSION}.tar.gz
     cd LuaJIT-${LUAJIT_VERSION}
-    make && make install
+    make && make install PREFIX=/usr/local/LuaJIT
     cd ..
     
     # 设置 LuaJIT 环境变量
-    export LUAJIT_LIB=/usr/local/lib
-    export LUAJIT_INC=/usr/local/include/luajit-2.1/
-    export LD_LIBRARY_PATH=/usr/local/lib/:$LD_LIBRARY_PATH
+    echo "export LUAJIT_LIB=/usr/local/LuaJIT/lib" >> /etc/profile
+    echo "export LUAJIT_INC=/usr/local/LuaJIT/include/luajit-2.0" >> /etc/profile
+    source /etc/profile
 
-    # 克隆 lua-nginx-module 模块
-    mkdir -p ${Setup_Path}/src
-    cd ${Setup_Path}/src
-    git clone https://github.com/openresty/lua-nginx-module.git
 fi
 
 # 下载并安装 PCRE
@@ -71,6 +67,10 @@ git clone https://github.com/FRiCKLE/ngx_cache_purge.git
 
 # 克隆 ngx_http_substitutions_filter_module 模块
 git clone https://github.com/yaoweibin/ngx_http_substitutions_filter_module.git
+
+# 克隆ngx_devel_kit，lua-nginx-module模块
+wget  --no-check-certificate https://github.com/vision5/ngx_devel_kit/archive/v0.3.1.tar.gz && tar -xvf v0.3.1.tar.gz && rm -f v0.3.1.tar.gz
+wget  --no-check-certificate -O lua-nginx-module-0.10.13.tar.gz https://file.sanguoguoguo.us.kg/api/public/dl/mQMe_WHO/%E5%B8%B8%E7%94%A8%E8%84%9A%E6%9C%AC/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/lua-nginx-module-0.10.13.tar.gz && tar zxvf lua-nginx-module-0.10.13.tar.gz && rm -f lua-nginx-module-0.10.13.tar.gz
 
 # 下载 Nginx 源码
 cd /usr/local/src
@@ -100,7 +100,10 @@ cd nginx-${NGINX_VERSION}
 
 # 如果选择安装 LuaJIT，添加 lua-nginx-module 模块
 if [[ "$install_luajit" == "y" || "$install_luajit" == "Y" ]]; then
-    ./configure --add-module=${Setup_Path}/src/lua-nginx-module
+    ./configure --add-module=${Setup_Path}/src/ngx_devel_kit-0.3.1 \
+    --add-module=${Setup_Path}/src/lua-nginx-module-0.10.13 \
+    --with-ld-opt="-Wl,-E -Wl,-rpath,/usr/local/LuaJIT/lib" \
+    --with-cc-opt="-Wno-error"
 fi
 
 # 编译并安装 Nginx
@@ -155,8 +158,5 @@ if [[ "y" == "${_AS_A_SYSTEM_SERVICE}" ]]; then
 fi
 
 echo "请手动以下命令刷新nginx环境变量，前三条是安装LuaJIT后一键执行，最后一条必须执行"
-echo "export LUAJIT_LIB=/usr/local/lib"
-echo "export LUAJIT_INC=/usr/local/include/luajit-2.1/"
-echo "export LD_LIBRARY_PATH=/usr/local/lib/:$LD_LIBRARY_PATH"
 echo "source /etc/profile"
 echo "Nginx ${NGINX_VERSION} 安装完成并已启动！"
