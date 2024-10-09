@@ -48,7 +48,7 @@ if [[ "$install_luajit" == "y" || "$install_luajit" == "Y" ]]; then
     echo "export LUAJIT_LIB=/usr/local/LuaJIT/lib" >> /etc/profile
     echo "export LUAJIT_INC=/usr/local/LuaJIT/include/luajit-2.1" >> /etc/profile
     eval "$(source /etc/profile; env)"
-    source /etc/profile
+    ln -sf luajit-2.1.0-beta3 /usr/local/LuaJIT/bin/luajit
 
 fi
 
