@@ -80,10 +80,10 @@ tar zxvf nginx-${NGINX_VERSION}.tar.gz
 
 # 如果选择安装 LuaJIT，添加 lua-nginx-module 模块
 if [[ "$install_luajit" == "y" || "$install_luajit" == "Y" ]]; then
-    CONFIGURE_ARGS="$CONFIGURE_ARGS --with-ld-opt='-Wl,-E' --with-cc-opt='-Wno-error'"
-else
     # 添加 LuaJIT 编译选项
     CONFIGURE_ARGS="$CONFIGURE_ARGS --add-module=${Setup_Path}/src/lua-nginx-module --with-ld-opt='-Wl,-E -Wl,-rpath,/usr/local/LuaJIT/lib' --with-cc-opt='-Wno-error'"
+else
+    CONFIGURE_ARGS="$CONFIGURE_ARGS --with-ld-opt='-Wl,-E' --with-cc-opt='-Wno-error'"
 fi
 
 # 配置 Nginx 编译选项
@@ -115,11 +115,7 @@ echo 'export PATH=$PATH:/usr/local/nginx/sbin' | tee -a /etc/profile
 source /etc/profile
 
 # 集中删除所有安装包和源码目录
-# cd /usr/local/src
-# rm -rf LuaJIT-${LUAJIT_VERSION}.tar.gz LuaJIT-${LUAJIT_VERSION} \
-#     pcre-${pcre_version}.tar.gz pcre-${pcre_version} \
-#     openssl-${OPENSSL_VERSION}.tar.gz openssl-${OPENSSL_VERSION} \
-#     nginx-${NGINX_VERSION}.tar.gz nginx-${NGINX_VERSION}
+rm -rf /usr/local/src/*.tar.gz
     
 # 注册 Nginx 成为系统服务
 _AS_A_SYSTEM_SERVICE="y"
