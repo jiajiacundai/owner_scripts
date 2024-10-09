@@ -47,7 +47,4 @@ wget -O ntp_install.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/htt
 ```shell
 wget -O nginx.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/nginx.sh && chmod +x nginx.sh && bash nginx.sh
 ```
-# nginx2.sh
-```shell
-wget -O nginx2.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/nginx2.sh && chmod +x nginx2.sh && bash nginx2.sh
-```
+
