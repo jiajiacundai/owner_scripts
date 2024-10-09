@@ -47,7 +47,7 @@ if [[ "$install_luajit" == "y" || "$install_luajit" == "Y" ]]; then
     # 设置 LuaJIT 环境变量
     echo "export LUAJIT_LIB=/usr/local/LuaJIT/lib" >> /etc/profile
     echo "export LUAJIT_INC=/usr/local/LuaJIT/include/luajit-2.1" >> /etc/profile
-    # echo "export PATH=\$PATH:/usr/local/LuaJIT/bin" >> /etc/profile
+    echo "export PATH=\$PATH:/usr/local/LuaJIT/bin" >> /etc/profile
    
     # 创建符号链接
     ln -sf /usr/local/LuaJIT/bin/luajit-${LUAJIT_VERSION} /usr/local/LuaJIT/bin/luajit
