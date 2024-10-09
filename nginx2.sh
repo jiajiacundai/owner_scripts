@@ -157,6 +157,6 @@ if [[ "y" == "${_AS_A_SYSTEM_SERVICE}" ]]; then
 
 fi
 
-echo "请手动以下命令刷新nginx环境变量，前三条是安装LuaJIT后一键执行，最后一条必须执行"
+echo "请手动以下命令刷新nginx环境变量"
 echo "source /etc/profile"
 echo "Nginx ${NGINX_VERSION} 安装完成并已启动！"
