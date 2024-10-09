@@ -9,6 +9,7 @@ OPENSSL_VERSION="1.1.1w"
 NGINX_VERSION="1.24.0"
 NGX_CACHE_PURGE_VERSION="2.3"
 SUBSTITUTIONS_FILTER_MODULE="ngx_http_substitutions_filter_module"
+CONFIGURE_ARGS=""
 
 # 检查系统类型
 if [ -f /etc/os-release ]; then
@@ -77,6 +78,14 @@ cd /usr/local/src
 wget --no-check-certificate http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
 tar zxvf nginx-${NGINX_VERSION}.tar.gz
 
+# 如果选择安装 LuaJIT，添加 lua-nginx-module 模块
+if [[ "$install_luajit" == "y" || "$install_luajit" == "Y" ]]; then
+    CONFIGURE_ARGS="$CONFIGURE_ARGS --with-ld-opt='-Wl,-E' --with-cc-opt='-Wno-error'"
+else
+    # 添加 LuaJIT 编译选项
+    CONFIGURE_ARGS="$CONFIGURE_ARGS --add-module=${Setup_Path}/src/lua-nginx-module --with-ld-opt='-Wl,-E -Wl,-rpath,/usr/local/LuaJIT/lib' --with-cc-opt='-Wno-error'"
+fi
+
 # 配置 Nginx 编译选项
 cd nginx-${NGINX_VERSION}
 ./configure --prefix=${Setup_Path} \
@@ -95,16 +104,7 @@ cd nginx-${NGINX_VERSION}
 --with-http_mp4_module \
 --with-http_auth_request_module \
 --add-module=${Setup_Path}/src/ngx_http_substitutions_filter_module \
---with-ld-opt="-Wl,-E" \
---with-cc-opt="-Wno-error"
-
-# 如果选择安装 LuaJIT，添加 lua-nginx-module 模块
-if [[ "$install_luajit" == "y" || "$install_luajit" == "Y" ]]; then
-    ./configure --add-module=${Setup_Path}/src/ngx_devel_kit-0.3.1 \
-    --add-module=${Setup_Path}/src/lua-nginx-module-0.10.13 \
-    --with-ld-opt="-Wl,-E -Wl,-rpath,/usr/local/LuaJIT/lib" \
-    --with-cc-opt="-Wno-error"
-fi
+$CONFIGURE_ARGS  # 添加 LuaJIT 的编译选项
 
 # 编译并安装 Nginx
 make -j${cpuCore}
