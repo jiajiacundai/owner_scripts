@@ -81,7 +81,7 @@ tar zxvf nginx-${NGINX_VERSION}.tar.gz
 # 如果选择安装 LuaJIT，添加 lua-nginx-module 模块
 if [[ "$install_luajit" == "y" || "$install_luajit" == "Y" ]]; then
     # 添加 LuaJIT 编译选项
-    CONFIGURE_ARGS="$CONFIGURE_ARGS --add-module=${Setup_Path}/src/lua-nginx-module-0.10.13 --add-module=${Setup_Path}/src/ngx_devel_kit-0.3.1--with-ld-opt='-Wl,-E,-rpath,/usr/local/LuaJIT/lib' --with-cc-opt='-Wno-error'"
+    CONFIGURE_ARGS="$CONFIGURE_ARGS --add-module=${Setup_Path}/src/lua-nginx-module-0.10.13 --add-module=${Setup_Path}/src/ngx_devel_kit-0.3.1 --with-ld-opt='-Wl,-E,-rpath,/usr/local/LuaJIT/lib' --with-cc-opt='-Wno-error'"
 else
     CONFIGURE_ARGS="$CONFIGURE_ARGS --with-ld-opt='-Wl,-E' --with-cc-opt='-Wno-error'"
 fi
