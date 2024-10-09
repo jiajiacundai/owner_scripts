@@ -25,6 +25,7 @@ make && make install PREFIX=$INSTALL_DIR
 # 设置 LuaJIT 环境变量
 echo "export LUAJIT_LIB=$INSTALL_DIR/lib" >> /etc/profile
 echo "export LUAJIT_INC=$INSTALL_DIR/include/luajit-2.1" >> /etc/profile
+echo "export PATH=\$PATH:$INSTALL_DIR/bin" >> /etc/profile
 
 # 创建符号链接
 ln -sf $INSTALL_DIR/bin/luajit-${LUAJIT_VERSION} $INSTALL_DIR/bin/luajit
@@ -33,4 +34,5 @@ ln -sf $INSTALL_DIR/bin/luajit-${LUAJIT_VERSION} $INSTALL_DIR/bin/luajit
 source /etc/profile
 
 echo "LuaJIT ${LUAJIT_VERSION} has been successfully installed to $INSTALL_DIR"
+echo "The PATH has been updated in /etc/profile"
 echo "Please run 'source /etc/profile' or log out and log back in to apply the changes to your current session."
