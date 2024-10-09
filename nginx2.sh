@@ -41,7 +41,8 @@ if [[ "$install_luajit" == "y" || "$install_luajit" == "Y" ]]; then
     wget --no-check-certificate https://www.isres.com/file/LuaJIT-${LUAJIT_VERSION}.tar.gz
     tar zxvf LuaJIT-${LUAJIT_VERSION}.tar.gz
     cd LuaJIT-${LUAJIT_VERSION}
-    make && make install
+    make
+    make install PREFIX=/usr/local/LuaJIT
     cd ..
     
     # 设置 LuaJIT 环境变量
