@@ -113,7 +113,6 @@ make install
 # 刷新 Nginx 环境变量
 echo 'export PATH=$PATH:/usr/local/nginx/sbin' | tee -a /etc/profile
 source /etc/profile
-exec "$SHELL"
 
 # 集中删除所有安装包和源码目录
 # cd /usr/local/src
@@ -161,3 +160,4 @@ fi
 echo "请手动以下命令刷新nginx环境变量"
 echo "source /etc/profile"
 echo "Nginx ${NGINX_VERSION} 安装完成并已启动！"
+exec "$SHELL"
