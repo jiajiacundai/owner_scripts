@@ -17,10 +17,13 @@ CLEAN_TIME=$(echo "$TIME" | sed 's/T/ /; s/\..*//; s/Z//')
 # 显示处理后的时间字符串，调试用
 echo "处理后的时间字符串: $CLEAN_TIME"
 
-# 使用 date -u 解析并设置UTC时间
-FORMATTED_TIME=$(date -u -d "$CLEAN_TIME" +"%Y%m%d%H%M.%S")
-
-# 使用 date 命令设置系统时间
-sudo date "$FORMATTED_TIME"
+# 如果 timedatectl 命令可用，使用它来设置时间
+if command -v timedatectl > /dev/null 2>&1; then
+    sudo timedatectl set-time "$CLEAN_TIME"
+else
+    # 使用 date -u 解析并设置 UTC 时间
+    FORMATTED_TIME=$(date -u -d "$CLEAN_TIME" +"%Y%m%d%H%M.%S")
+    sudo date "$FORMATTED_TIME"
+fi
 
 echo "系统时间已同步为: $(date)"
