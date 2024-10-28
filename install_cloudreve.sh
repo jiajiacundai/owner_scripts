@@ -82,7 +82,13 @@ uninstall_cloudreve() {
     # 停止并禁用 Cloudreve 服务
     systemctl stop cloudreve
     systemctl disable cloudreve
-    
+
+    # 卸载 Aria2
+    if [[ -f /root/docker-compose/cloudreve/aria2.sh ]]; then
+        echo "卸载 Aria2..."
+        yes 3 | /root/docker-compose/cloudreve/aria2.sh
+    fi
+
     # 删除 Cloudreve 文件夹和文件
     rm -rf /root/docker-compose/cloudreve/{aria2.sh,cloudreve,cloudreve.db,conf.ini,LICENSE,README.md,README_zh-CN.md,install_cloudreve.sh}
     
