@@ -63,6 +63,22 @@ EOF
     echo "Cloudreve 安装并启动完成！"
 }
 
+# 显示管理员账号和密码
+show_admin_credentials() {
+    echo "等待 Cloudreve 日志生成管理员账号和密码..."
+    sleep 5  # 等待几秒以确保日志文件已创建
+
+    # 查找 Cloudreve 日志文件中生成的管理员信息
+    log_file="/root/docker-compose/cloudreve/cloudreve.log"
+    if [[ -f "$log_file" ]]; then
+        admin_info=$(grep -E "默认管理账号|账号" "$log_file" | head -n 2)
+        echo "默认管理员账号和密码："
+        echo "$admin_info"
+    else
+        echo "无法找到 Cloudreve 日志文件。请手动检查日志以获取账号信息。"
+    fi
+}
+
 # 安装 Aria2
 install_aria2() {
     echo "正在安装 Aria2..."
@@ -82,6 +98,9 @@ main() {
     else
         echo "跳过 Aria2 安装。"
     fi
+
+    # 显示管理员账号和密码
+    show_admin_credentials
 }
 
 main
