@@ -33,6 +33,18 @@ install_cloudreve() {
     chmod +x /root/docker-compose/cloudreve/cloudreve
     rm -f cloudreve.tar.gz
 
+    # 初次运行并生成日志
+    echo "首次运行 Cloudreve 以生成初始管理员账号信息..."
+    /root/docker-compose/cloudreve/cloudreve > /root/docker-compose/cloudreve/cloudreve.log 2>&1 &
+    sleep 5  # 等待 Cloudreve 完成启动并生成日志
+    pkill -f "/root/docker-compose/cloudreve/cloudreve"  # 中断 Cloudreve 进程
+
+    # 从日志中提取管理员账号和密码
+    admin_user=$(grep -oP 'Admin user name: \K\S+' /root/docker-compose/cloudreve/cloudreve.log)
+    admin_password=$(grep -oP 'Admin password: \K\S+' /root/docker-compose/cloudreve/cloudreve.log)
+    echo "管理员账号: $admin_user"
+    echo "管理员密码: $admin_password"
+
     # 创建 systemd 服务文件
     echo "创建 Cloudreve 服务文件..."
     cat <<EOF > /usr/lib/systemd/system/cloudreve.service
@@ -44,13 +56,10 @@ Wants=network.target
 
 [Service]
 WorkingDirectory=/root/docker-compose/cloudreve
-ExecStart=/root/docker-compose/cloudreve/cloudreve >> /root/docker-compose/cloudreve/cloudreve.log 2>&1
+ExecStart=/root/docker-compose/cloudreve/cloudreve > /root/docker-compose/cloudreve/cloudreve.log 2>&1
 Restart=on-abnormal
 RestartSec=5s
 KillMode=mixed
-
-StandardOutput=null
-StandardError=syslog
 
 [Install]
 WantedBy=multi-user.target
@@ -61,17 +70,6 @@ EOF
     systemctl start cloudreve
     systemctl enable cloudreve
     echo "Cloudreve 安装并启动完成！"
-
-    # 等待日志生成初始账号信息
-    sleep 5
-
-    # 提取日志中的账号和密码
-    admin_user=$(grep -oP 'Admin user name: \K\S+' /root/docker-compose/cloudreve/cloudreve.log)
-    admin_password=$(grep -oP 'Admin password: \K\S+' /root/docker-compose/cloudreve/cloudreve.log)
-
-    echo "初始管理员账号信息:"
-    echo "用户名: $admin_user"
-    echo "密码: $admin_password"
 }
 
 # 安装 Aria2
