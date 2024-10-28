@@ -47,4 +47,8 @@ wget -O ntp_install.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/htt
 ```shell
 wget -O nginx.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/nginx.sh && chmod +x nginx.sh && bash nginx.sh
 ```
+# install_cloudreve.sh
+```shell
+wget -O install_cloudreve.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/install_cloudreve.sh && chmod +x install_cloudreve.sh && bash install_cloudreve.sh
+```
 
