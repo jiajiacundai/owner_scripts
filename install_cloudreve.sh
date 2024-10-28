@@ -86,7 +86,7 @@ uninstall_cloudreve() {
     # 卸载 Aria2
     if [[ -f /root/docker-compose/cloudreve/aria2.sh ]]; then
         echo "卸载 Aria2..."
-        yes 3 | /root/docker-compose/cloudreve/aria2.sh
+        (printf "3\n"; sleep 1; printf "y\n") | /root/docker-compose/cloudreve/aria2.sh
     fi
 
     # 删除 Cloudreve 文件夹和文件
