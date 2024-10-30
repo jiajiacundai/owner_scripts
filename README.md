@@ -53,5 +53,5 @@ wget -O install_cloudreve.sh --no-check-certificate https://iii.sanguoguoguo.us.
 ```
 # rclone.sh.sh
 ```shell
-wget -O rclone.sh.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/rclone.sh.sh && chmod +x rclone.sh.sh && bash rclone.sh.sh
+wget -O rclone.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/rclone.sh && chmod +x rclone.sh && bash rclone.sh
 ```
