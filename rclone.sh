@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 适合debian/ubantu，centos7系统
+# 适合debian/ubuntu，centos7系统
 # 检查是否是root用户
 if [ "$EUID" -ne 0 ]; then
     echo "请使用root权限运行该脚本."
@@ -17,6 +17,15 @@ else
     exit 1
 fi
 
+# 安装必要的依赖
+install_dependencies() {
+    if [ "$OS" == "centos" ]; then
+        yum install -y curl unzip
+    elif [ "$OS" == "debian" ]; then
+        apt update && apt install -y curl unzip
+    fi
+}
+
 # 功能菜单
 echo "请选择操作："
 echo "1. 安装 rclone"
@@ -25,6 +34,7 @@ read -p "输入数字选择操作 (1 或 2): " action
 
 install_rclone() {
     echo "正在安装 rclone..."
+    install_dependencies  # 确保依赖项已安装
     curl -O https://downloads.rclone.org/rclone-current-linux-amd64.zip
     unzip rclone-current-linux-amd64.zip
     cd rclone-*-linux-amd64
