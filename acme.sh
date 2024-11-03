@@ -241,7 +241,9 @@ acme_standalone(){
             exit 1
         fi
     fi
-    
+
+    # 创建证书存放目录
+    mkdir -p /root/cert
     bash ~/.acme.sh/acme.sh --install-cert -d ${domain} --key-file /root/cert/private.key --fullchain-file /root/cert/cert.crt --ecc
     checktls
 }
@@ -270,6 +272,8 @@ acme_cfapiTLD(){
         bash ~/.acme.sh/acme.sh --issue --dns dns_cf -d "${domain}" -k ec-256 --insecure
     fi
 
+    # 创建证书存放目录
+    mkdir -p /root/cert
     bash ~/.acme.sh/acme.sh --install-cert -d "${domain}" --key-file /root/cert/private.key --fullchain-file /root/cert/cert.crt --ecc
     checktls
 }
@@ -299,6 +303,8 @@ acme_cfapiNTLD(){
         bash ~/.acme.sh/acme.sh --issue --dns dns_cf -d "*.${domain}" -d "${domain}" -k ec-256 --insecure
     fi
 
+    # 创建证书存放目录
+    mkdir -p /root/cert
     bash ~/.acme.sh/acme.sh --install-cert -d "*.${domain}" --key-file /root/cert/private.key --fullchain-file /root/cert/cert.crt --ecc
     checktls
 }
