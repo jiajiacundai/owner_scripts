@@ -126,8 +126,8 @@ check_80(){
 }
 
 checktls() {
-    if [[ -f /root/cert.crt && -f /root/private.key ]]; then
-        if [[ -s /root/cert.crt && -s /root/private.key ]]; then
+    if [[ -f /root/cert/cert.crt && -f /root/cert/private.key ]]; then
+        if [[ -s /root/cert/cert.crt && -s /root/cert/private.key ]]; then
             if [[ -n $(type -P wg-quick) && -n $(type -P wgcf) ]]; then
                 wg-quick up wgcf >/dev/null 2>&1
             fi
@@ -140,8 +140,8 @@ checktls() {
             echo "0 0 * * * root bash /root/.acme.sh/acme.sh --cron -f >/dev/null 2>&1" >> /etc/crontab
 
             green "证书申请成功! 脚本申请到的证书 (cert.crt) 和私钥 (private.key) 文件已保存到 /root 文件夹下"
-            yellow "证书 crt 文件路径如下: /root/cert.crt"
-            yellow "私钥 key 文件路径如下: /root/private.key"
+            yellow "证书 crt 文件路径如下: /root/cert/cert.crt"
+            yellow "私钥 key 文件路径如下: /root/cert/private.key"
         else
             if [[ -n $(type -P wg-quick) && -n $(type -P wgcf) ]]; then
                 wg-quick up wgcf >/dev/null 2>&1
@@ -242,7 +242,7 @@ acme_standalone(){
         fi
     fi
     
-    bash ~/.acme.sh/acme.sh --install-cert -d ${domain} --key-file /root/private.key --fullchain-file /root/cert.crt --ecc
+    bash ~/.acme.sh/acme.sh --install-cert -d ${domain} --key-file /root/cert/private.key --fullchain-file /root/cert/cert.crt --ecc
     checktls
 }
 
@@ -270,7 +270,7 @@ acme_cfapiTLD(){
         bash ~/.acme.sh/acme.sh --issue --dns dns_cf -d "${domain}" -k ec-256 --insecure
     fi
 
-    bash ~/.acme.sh/acme.sh --install-cert -d "${domain}" --key-file /root/private.key --fullchain-file /root/cert.crt --ecc
+    bash ~/.acme.sh/acme.sh --install-cert -d "${domain}" --key-file /root/cert/private.key --fullchain-file /root/cert/cert.crt --ecc
     checktls
 }
 
@@ -299,7 +299,7 @@ acme_cfapiNTLD(){
         bash ~/.acme.sh/acme.sh --issue --dns dns_cf -d "*.${domain}" -d "${domain}" -k ec-256 --insecure
     fi
 
-    bash ~/.acme.sh/acme.sh --install-cert -d "*.${domain}" --key-file /root/private.key --fullchain-file /root/cert.crt --ecc
+    bash ~/.acme.sh/acme.sh --install-cert -d "*.${domain}" --key-file /root/cert/private.key --fullchain-file /root/cert/cert.crt --ecc
     checktls
 }
 
@@ -320,7 +320,7 @@ revoke_cert() {
         bash ~/.acme.sh/acme.sh --remove -d ${domain} --ecc
 
         rm -rf ~/.acme.sh/${domain}_ecc
-        rm -f /root/cert.crt /root/private.key
+        rm -f /root/cert/cert.crt /root/cert/private.key
 
         green "撤销 ${domain} 的域名证书成功"
     else
