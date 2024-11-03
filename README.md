@@ -51,7 +51,11 @@ wget -O nginx.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://r
 ```shell
 wget -O install_cloudreve.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/install_cloudreve.sh && chmod +x install_cloudreve.sh && bash install_cloudreve.sh
 ```
-# rclone.sh.sh
+# rclone.sh
 ```shell
 wget -O rclone.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/rclone.sh && chmod +x rclone.sh && bash rclone.sh
+```
+# alist_install.sh
+```shell
+wget -O alist_install.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/alist_install.sh && chmod +x alist_install.sh && bash alist_install.sh
 ```
