@@ -36,6 +36,7 @@ install_alist() {
     # 下载并解压
     wget -O alist-linux-amd64.tar.gz "$LATEST_URL"
     tar -zxvf alist-linux-amd64.tar.gz
+    rm -f alist-linux-amd64.tar.gz
     chmod +x alist
 
     # 配置 systemd 服务
@@ -80,7 +81,7 @@ update_alist() {
 uninstall_alist() {
     systemctl stop alist
     systemctl disable alist
-    rm -rf $INSTALL_DIR
+    rm -rf "${INSTALL_DIR}/data" "${INSTALL_DIR}/alist" 
     rm -f /usr/lib/systemd/system/alist.service
     systemctl daemon-reload
     echo "AList 已卸载。"
