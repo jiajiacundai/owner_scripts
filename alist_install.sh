@@ -81,7 +81,7 @@ update_alist() {
 uninstall_alist() {
     systemctl stop alist
     systemctl disable alist
-    rm -rf "${INSTALL_DIR}/data" "${INSTALL_DIR}/alist" 
+    rm -rf "${INSTALL_DIR}/alist/data" "${INSTALL_DIR}/alist/alist" 
     rm -f /usr/lib/systemd/system/alist.service
     systemctl daemon-reload
     echo "AList 已卸载。"
