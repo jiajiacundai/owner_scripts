@@ -59,3 +59,7 @@ wget -O rclone.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://
 ```shell
 wget -O alist_install.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/alist_install.sh && chmod +x alist_install.sh && bash alist_install.sh
 ```
+# addswap.sh.sh
+```shell
+wget -O addswap.sh.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/addswap.sh.sh && chmod +x addswap.sh.sh && bash addswap.sh.sh
+```
