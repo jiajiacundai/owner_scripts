@@ -61,5 +61,5 @@ wget -O alist_install.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/h
 ```
 # addswap.sh.sh
 ```shell
-wget -O addswap.sh.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/addswap.sh.sh && chmod +x addswap.sh.sh && bash addswap.sh.sh
+wget -O addswap.sh --no-check-certificate https://iii.sanguoguoguo.us.kg/https://raw.githubusercontent.com/jiajiacundai/owner_scripts/main/addswap.sh && chmod +x addswap.sh && bash addswap.sh
 ```
