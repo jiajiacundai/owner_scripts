@@ -1,4 +1,19 @@
-#!/bin/bash
+#!/bin/sh
+if [ -z "${BASH_VERSION:-}" ]; then
+    if command -v bash >/dev/null 2>&1; then
+        exec bash "$0" "$@"
+    fi
+    if [ -f /etc/alpine-release ] && command -v apk >/dev/null 2>&1; then
+        if [ "$(id -u)" != "0" ]; then
+            echo "注意：请在root用户下运行脚本"
+            exit 1
+        fi
+        apk update && apk add --no-cache bash
+        exec bash "$0" "$@"
+    fi
+    echo "注意：请使用 bash 运行脚本"
+    exit 1
+fi
 
 RED="\033[31m"
 GREEN="\033[32m"
@@ -17,12 +32,12 @@ yellow(){
     echo -e "\033[33m\033[01m$1\033[0m"
 }
 
-REGEX=("debian" "ubuntu" "centos|red hat|kernel|oracle linux|alma|rocky" "'amazon linux'" "fedora")
-RELEASE=("Debian" "Ubuntu" "CentOS" "CentOS" "Fedora")
-PACKAGE_UPDATE=("apt-get update" "apt-get update" "yum -y update" "yum -y update" "yum -y update")
-PACKAGE_INSTALL=("apt -y install" "apt -y install" "yum -y install" "yum -y install" "yum -y install")
-PACKAGE_REMOVE=("apt -y remove" "apt -y remove" "yum -y remove" "yum -y remove" "yum -y remove")
-PACKAGE_UNINSTALL=("apt -y autoremove" "apt -y autoremove" "yum -y autoremove" "yum -y autoremove" "yum -y autoremove")
+REGEX=("debian" "ubuntu" "centos|red hat|kernel|oracle linux|alma|rocky" "'amazon linux'" "fedora" "alpine")
+RELEASE=("Debian" "Ubuntu" "CentOS" "CentOS" "Fedora" "Alpine")
+PACKAGE_UPDATE=("apt-get update" "apt-get update" "yum -y update" "yum -y update" "yum -y update" "apk update")
+PACKAGE_INSTALL=("apt -y install" "apt -y install" "yum -y install" "yum -y install" "yum -y install" "apk add --no-cache")
+PACKAGE_REMOVE=("apt -y remove" "apt -y remove" "yum -y remove" "yum -y remove" "yum -y remove" "apk del")
+PACKAGE_UNINSTALL=("apt -y autoremove" "apt -y autoremove" "yum -y autoremove" "yum -y autoremove" "yum -y autoremove" "apk del")
 
 [[ $EUID -ne 0 ]] && red "注意：请在root用户下运行脚本" && exit 1
 
@@ -43,26 +58,110 @@ done
 
 [[ -z $SYSTEM ]] && red "不支持当前VPS系统, 请使用主流的操作系统" && exit 1
 
+package_update(){
+    if [[ ! $SYSTEM == "CentOS" ]]; then
+        ${PACKAGE_UPDATE[int]}
+    fi
+}
+
+package_install(){
+    ${PACKAGE_INSTALL[int]} "$@"
+}
+
+install_core_packages(){
+    local packages=(curl wget sudo socat openssl)
+    if [[ $SYSTEM == "Alpine" ]]; then
+        packages+=(bash bind-tools)
+    else
+        packages+=(dnsutils)
+    fi
+    package_install "${packages[@]}"
+}
+
+service_start(){
+    local service_name=$1
+    if [[ -n $(type -P systemctl) ]]; then
+        systemctl start "$service_name"
+    elif [[ -n $(type -P rc-service) ]]; then
+        rc-service "$service_name" start
+    elif [[ -n $(type -P service) ]]; then
+        service "$service_name" start
+    else
+        return 1
+    fi
+}
+
+service_stop(){
+    local service_name=$1
+    if [[ -n $(type -P systemctl) ]]; then
+        systemctl stop "$service_name"
+    elif [[ -n $(type -P rc-service) ]]; then
+        rc-service "$service_name" stop
+    elif [[ -n $(type -P service) ]]; then
+        service "$service_name" stop
+    else
+        return 1
+    fi
+}
+
+service_enable(){
+    local service_name=$1
+    if [[ -n $(type -P systemctl) ]]; then
+        systemctl enable "$service_name"
+    elif [[ -n $(type -P rc-update) ]]; then
+        rc-update add "$service_name"
+    else
+        return 1
+    fi
+}
+
+install_cron_service(){
+    if [[ $SYSTEM == "CentOS" ]]; then
+        package_install cronie
+        service_start crond
+        service_enable crond
+    elif [[ $SYSTEM == "Alpine" ]]; then
+        service_start crond || crond
+        service_enable crond || true
+    else
+        package_install cron
+        service_start cron
+        service_enable cron
+    fi
+}
+
+remove_acme_cron(){
+    sed -i '/--cron/d' /etc/crontab >/dev/null 2>&1
+    if [[ -n $(type -P crontab) ]]; then
+        crontab -l 2>/dev/null | sed '/--cron/d' | crontab - >/dev/null 2>&1 || true
+    fi
+    [[ -f /etc/crontabs/root ]] && sed -i '/--cron/d' /etc/crontabs/root >/dev/null 2>&1
+}
+
+install_acme_cron(){
+    remove_acme_cron
+    if [[ $SYSTEM == "Alpine" ]]; then
+        if [[ -n $(type -P crontab) ]]; then
+            (crontab -l 2>/dev/null; echo "0 0 * * * bash /root/.acme.sh/acme.sh --cron -f >/dev/null 2>&1") | crontab -
+        else
+            mkdir -p /etc/crontabs
+            echo "0 0 * * * bash /root/.acme.sh/acme.sh --cron -f >/dev/null 2>&1" >> /etc/crontabs/root
+        fi
+    else
+        touch /etc/crontab
+        echo "0 0 * * * root bash /root/.acme.sh/acme.sh --cron -f >/dev/null 2>&1" >> /etc/crontab
+    fi
+}
+
 check_ip(){
     ipv4=$(curl -s4m8 ip.sb -k | sed -n 1p)
     ipv6=$(curl -s6m8 ip.sb -k | sed -n 1p)
 }
 
 inst_acme(){
-    if [[ ! $SYSTEM == "CentOS" ]]; then
-        ${PACKAGE_UPDATE[int]}
-    fi
-    ${PACKAGE_INSTALL[int]} curl wget sudo socat openssl dnsutils
-
-    if [[ $SYSTEM == "CentOS" ]]; then
-        ${PACKAGE_INSTALL[int]} cronie
-        systemctl start crond
-        systemctl enable crond
-    else
-        ${PACKAGE_INSTALL[int]} cron
-        systemctl start cron
-        systemctl enable cron
-    fi
+    package_update
+    install_core_packages
+    install_cron_service
 
     read -rp "请输入注册邮箱 (例: admin@gmail.com, 或留空自动生成一个gmail邮箱): " email
     if [[ -z $email ]]; then
@@ -90,7 +189,7 @@ inst_acme(){
 unst_acme() {
     [[ -z $(~/.acme.sh/acme.sh -v 2>/dev/null) ]] && yellow "未安装Acme.sh, 卸载程序无法执行!" && exit 1
     ~/.acme.sh/acme.sh --uninstall
-    sed -i '/--cron/d' /etc/crontab >/dev/null 2>&1
+    remove_acme_cron
     rm -rf ~/.acme.sh
     green "Acme.sh 证书一键申请脚本已彻底卸载!"
 }
@@ -100,10 +199,8 @@ check_80(){
     # Source: https://github.com/wulabing/Xray_onekey
     
     if [[ -z $(type -P lsof) ]]; then
-        if [[ ! $SYSTEM == "CentOS" ]]; then
-            ${PACKAGE_UPDATE[int]}
-        fi
-        ${PACKAGE_INSTALL[int]} lsof
+        package_update
+        package_install lsof
     fi
     
     yellow "正在检测 80 端口是否占用..."
@@ -132,12 +229,11 @@ checktls() {
                 wg-quick up wgcf >/dev/null 2>&1
             fi
             if [[ -a "/opt/warp-go/warp-go" ]]; then
-                systemctl start warp-go 
+                service_start warp-go
             fi
 
             echo $domain > /root/ca.log
-            sed -i '/--cron/d' /etc/crontab >/dev/null 2>&1
-            echo "0 0 * * * root bash /root/.acme.sh/acme.sh --cron -f >/dev/null 2>&1" >> /etc/crontab
+            install_acme_cron
 
             green "证书申请成功! 脚本申请到的证书 (cert.crt) 和私钥 (private.key) 文件已保存到 /root 文件夹下"
             yellow "证书 crt 文件路径如下: /root/cert/cert.crt"
@@ -147,7 +243,7 @@ checktls() {
                 wg-quick up wgcf >/dev/null 2>&1
             fi
             if [[ -a "/opt/warp-go/warp-go" ]]; then
-                systemctl start warp-go 
+                service_start warp-go
             fi
 
             red "抱歉，证书申请失败"
@@ -168,7 +264,7 @@ acme_standalone(){
     WARPv6Status=$(curl -s6m8 https://www.cloudflare.com/cdn-cgi/trace -k | grep warp | cut -d= -f2)
     if [[ $WARPv4Status =~ on|plus ]] || [[ $WARPv6Status =~ on|plus ]]; then
         wg-quick down wgcf >/dev/null 2>&1
-        systemctl stop warp-go >/dev/null 2>&1
+        service_stop warp-go >/dev/null 2>&1
     fi
     
     check_ip
@@ -220,7 +316,7 @@ acme_standalone(){
             wg-quick up wgcf >/dev/null 2>&1
         fi
         if [[ -a "/opt/warp-go/warp-go" ]]; then
-            systemctl start warp-go 
+            service_start warp-go
         fi
         yellow "域名解析失败, 请检查域名是否正确填写或等待解析完成再执行脚本"
         exit 1
@@ -230,7 +326,7 @@ acme_standalone(){
                 wg-quick up wgcf >/dev/null 2>&1
             fi
             if [[ -a "/opt/warp-go/warp-go" ]]; then
-                systemctl start warp-go 
+                service_start warp-go
             fi
             green "域名 ${domain} 目前解析的IP: ($domainIP)"
             red "当前域名解析的 IP 与当前 VPS 使用的真实IP不匹配"
